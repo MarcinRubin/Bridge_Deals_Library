@@ -55,12 +55,12 @@ class User(AbstractBaseUser):
     def get_full_name(self):
         return self.name
 
-    def has_perm(self):
+    def has_perm(self, perms):
         "Does the user have a specific permission?"
         # Simplest possible answer: Yes, always
         return True
 
-    def has_module_perms(self):
+    def has_module_perms(self, mod_auth):
         "Does the user have permissions to view the app `app_label`?"
         # Simplest possible answer: Yes, always
         return True

@@ -16,13 +16,13 @@ class UserSerializer(serializers.ModelSerializer):
         confirm_password = attrs.get("confirm_password")
         if password != confirm_password:
             raise serializers.ValidationError(
-                "Password is different from the confirm_password"
+                "Password is different from the confirm password!"
             )
         return attrs
 
     def validate_email(self, value):
         if User.objects.filter(email=value).exists():
-            raise serializers.ValidationError("User with this email already exists.")
+            raise serializers.ValidationError("User with this email already exists!")
         return value
 
     def create(self, validated_data):

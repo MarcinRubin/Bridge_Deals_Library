@@ -116,6 +116,7 @@ disable=
     W0141,
     C0501,
     C0114,
+    W0613,
 
 
 [REPORTS]
