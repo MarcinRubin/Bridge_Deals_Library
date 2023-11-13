@@ -1,4 +1,5 @@
 from django.contrib.auth import authenticate, login, logout
+from django.http import JsonResponse
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_protect, ensure_csrf_cookie
 from rest_framework import permissions, status
@@ -12,8 +13,8 @@ from .serializers import UserSerializer
 class GetCSRFToken(APIView):
     permission_classes = (permissions.AllowAny,)
 
-    def get(self):
-        return Response({"success": "CSRF token set"})
+    def get(self, request):
+        return JsonResponse({"success": "CSRF token set"})
 
 
 @method_decorator(csrf_protect, name="dispatch")
@@ -36,13 +37,13 @@ class UserLogin(APIView):
     def post(self, request):
         email = request.data.get("email")
         password = request.data.get("password")
-
         user = authenticate(request, email=email, password=password)
 
         if user and user.is_active:
             login(request, user)
             return Response(
-                {"detail": "Logged in sucesfully."}, status=status.HTTP_200_OK
+                {"detail": "Logged in sucesfully.", "user": email},
+                status=status.HTTP_200_OK,
             )
 
         return Response(
@@ -59,6 +60,10 @@ class UserLogout(APIView):
         )
 
 
-class UserView(APIView):
-    def get(self):
-        return Response("User is logged in", status=status.HTTP_200_OK)
+class ActiveSession(APIView):
+    permission_classes = (permissions.AllowAny,)
+
+    def get(self, request):
+        if request.user.is_authenticated:
+            return JsonResponse({"isAuthenticated": True, "user": request.user.email})
+        return JsonResponse({"isAuthenticated": False})

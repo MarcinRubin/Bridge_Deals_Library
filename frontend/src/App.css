@@ -1,0 +1,46 @@
+.form-container{
+  display: flex;
+  flex-direction: column;
+  border: 2px solid rgba(255, 255, 255, 0.616);
+  padding: 3.0rem;
+  border-radius: 0.5rem;
+}
+
+.form-container > h2{
+  text-align: center;
+  margin-top: 0;
+}
+
+.form-container > label{
+  align-items: center;
+  text-align: center;
+  padding: 5px;
+}
+
+.form-container > input{
+  padding: 0.75rem;
+}
+
+.form-container > span{
+  margin-top: 1.5rem;
+}
+
+button{
+  margin-top: 1rem;
+  color: white;
+}
+
+.form-container > .error-message{
+  color: rgb(190, 8, 38);
+}
+
+.main-container{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.main-container > button{
+  display: block;
+}
