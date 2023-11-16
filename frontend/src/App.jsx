@@ -37,21 +37,21 @@ function App() {
     console.log(err);
   }
 
-
-
   return (
-  <>
+  <div className='main'>
     {!activeSession && <Authentication
         setActiveSession={setActiveSession}
         client = {client}
         setActiveUser = {setActiveUser}
       />}
+
     {activeSession && <MainPage
       setActiveSession = {setActiveSession}
       client = {client}
       user = {activeUser}
     />}
-  </>
+  </div>
+
 );
 }
 

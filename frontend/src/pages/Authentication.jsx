@@ -6,7 +6,7 @@ const Authentication = ({setActiveSession, client, setActiveUser}) => {
     const [isLogin, setIsLogin] = useState(true)
 
   return (
-    <div>
+    <div className="login-register-container">
         {isLogin && <LoginForm
             setIsLogin = {setIsLogin}
             setActiveSession = {setActiveSession}

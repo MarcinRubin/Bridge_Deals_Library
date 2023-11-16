@@ -17,14 +17,13 @@ const LoginForm = ({setIsLogin, setActiveSession, client, setActiveUser}) => {
           )
           if(response.status === 200) {
             setActiveSession(true);
-            setActiveUser(reposne.data['email'])
+            setActiveUser(response.data['user'])
           }
         }
         catch(err){
           setLoginError(true)
         }
     }
-
 
     return (
     <div>

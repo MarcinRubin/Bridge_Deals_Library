@@ -1,3 +1,16 @@
+.main{
+  height: 100vh;
+}
+
+
+/*css for login/register part of the app*/
+.login-register-container{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
 .form-container{
   display: flex;
   flex-direction: column;
@@ -25,22 +38,164 @@
   margin-top: 1.5rem;
 }
 
-button{
+.form-container > button{
   margin-top: 1rem;
-  color: white;
 }
 
 .form-container > .error-message{
   color: rgb(190, 8, 38);
 }
 
-.main-container{
+
+/*Begining of header section*/
+.header-container{
+  display: flex;
+  height: 70px;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid white;
+}
+
+.right-control-panel{
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 1rem;
+  margin-right: 10px;
+}
+
+.left-control-panel{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-left: 10px;
+  height: 100%;
+}
+
+.logo{
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  height: 100%;
+  color: rgb(40, 89, 5);
+}
+
+.header-nav{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  gap: 20px;
+}
+
+.header-nav > a{
+  display: flex;
+  width: 120px;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  text-decoration: None;
+}
+
+.header-nav > a:hover{
+  background-color: hsl(0, 0%, 20%);
+}
+
+/*testing container for elements*/
+.test-container{
+  display: flex;
+  gap: 10px;
+}
+
+.test-container2{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  gap: 50px;
+}
+
+
+/*Interactive deal creation element*/
+.deal-grid-container{
+  display: grid;
+  border: 1px solid white;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  min-width: 300px;
+  aspect-ratio: 1/1;
+}
+
+.deal-grid-container > div{
+  border: 1px solid white;
+  display: flex;
   flex-direction: column;
 }
 
-.main-container > button{
+.deal-grid-container > div:first-child{
+  font-size: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.deal-grid-container > div > span{
+  padding-left: 5px;
   display: block;
+  flex: 1 1 0;
+  height: 0;
+}
+
+/*Interactive deal creation element center piece*/
+.deal-grid-container-center{
+  display: flex;
+  flex: 1;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.deal-grid-container-center > div{
+  display: flex;
+  padding-top: 0;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+}
+
+.deal-grid-container-center > div > span{
+  border: 2px white solid;
+  border-radius: 100%;
+  height: 85%;
+  aspect-ratio: 1;
+  text-align: center;
+}
+
+.deal-grid-container-center > div:nth-child(2){
+  box-sizing: border-box;
+  display: flex;
+  justify-content: space-between;
+  width:100%;
+  padding-left: 0.2rem;
+  padding-right: 0.2rem;
+}
+
+.vul-N > div:nth-child(odd) > span{
+  border-color: red;
+}
+
+.vul-E > div:nth-child(even) > span{
+  border-color: red;
+}
+
+/*End of center piece setup*/
+/*End of interactive deal creation element*/
+
+/*Deal creator container*/
+.deal-creator-container{
+  display: flex;
+  flex-direction: column;
+  border: 1px white solid;
 }
