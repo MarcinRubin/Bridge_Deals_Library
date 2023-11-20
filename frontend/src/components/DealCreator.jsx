@@ -1,7 +1,7 @@
 const DealCreator = ({deal}) => {
 
-
   return (
+    <div className="deal-container">
     <div className="deal-grid-container">
         <div>{deal.player}</div>
         <div>
@@ -19,7 +19,7 @@ const DealCreator = ({deal}) => {
                 ))
             }
         </div>
-        <div className={`deal-grid-container-center vul-${deal.vul}`} >
+        <div className={`deal-grid-container-center ${deal.vul[0] ? "vul-n" : ""} ${deal.vul[1] ? "vul-e" : ""}`}>
             <div>
                 <span>N</span>
             </div>
@@ -47,6 +47,8 @@ const DealCreator = ({deal}) => {
             }
         </div>
         <div></div>
+    </div>
+
     </div>
   )
 }

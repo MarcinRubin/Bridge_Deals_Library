@@ -1,7 +1,11 @@
 from django.urls import path
+from rest_framework import routers
 
-from .views import DealsView
+from .views import DealsViewSet, TagsView
 
-urlpatterns = [
-    path("", DealsView.as_view(), name="deal-detail"),
-]
+router = routers.DefaultRouter()
+router.register(r"", DealsViewSet)
+
+urlpatterns = [path("tags/", TagsView.as_view(), name="tags-view")]
+
+urlpatterns += router.urls

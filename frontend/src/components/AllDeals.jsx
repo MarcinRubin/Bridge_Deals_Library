@@ -32,8 +32,10 @@ const AllDeals = ({ client }) => {
     </div>
 
     <div className="test-container2">
-      {option === '1' && <div>Option 1</div>}
-      {option === '2' && <NewDeal/>}
+      {option === '1' && <div> Option 1</div>}
+      {option === '2' && <NewDeal
+        client = {client}
+      />}
       {option === '3' && <div>Option 3</div>}
       {option === '4' && <div>Option 4</div>}
     </div>
