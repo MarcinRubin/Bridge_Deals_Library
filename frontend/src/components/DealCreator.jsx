@@ -1,7 +1,6 @@
 const DealCreator = ({deal}) => {
 
   return (
-    <div className="deal-container">
     <div className="deal-grid-container">
         <div>{deal.player}</div>
         <div>
@@ -49,7 +48,6 @@ const DealCreator = ({deal}) => {
         <div></div>
     </div>
 
-    </div>
   )
 }
 

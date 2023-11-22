@@ -110,9 +110,10 @@
   gap: 10px;
 }
 
-.test-container2{
-  margin-top: 1rem;
+.main-page-container{
+  margin-top: 2rem;
   margin-left: 1rem;
+  padding: 1rem;
   display: flex;
   align-items: flex-start;
   justify-content: center;
@@ -151,10 +152,19 @@
 .deal-container{
   display: flex;
   width: 300px;
+  font-size: inherit;
+  flex-direction: column;
+}
+
+.deal-container-small{
+  display: flex;
+  width: 150px;
+  font-size: 0.5rem;
   flex-direction: column;
 }
 
 .deal-grid-container{
+  font-size: inherit;
   display: grid;
   border: 1px solid white;
   grid-template-columns: repeat(3, 1fr);
@@ -164,19 +174,21 @@
 }
 
 .deal-grid-container > div{
+  font-size: inherit;
   border: 1px solid white;
   display: flex;
   flex-direction: column;
 }
 
 .deal-grid-container > div:first-child{
-  font-size: 2rem;
+  font-size: 2em;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .deal-grid-container > div > span{
+  font-size: 1em;
   padding-left: 5px;
   display: block;
   flex: 1 1 0;
@@ -185,35 +197,37 @@
 
 /*Interactive deal creation element center piece*/
 .deal-grid-container-center{
+  font-size: inherit;
   display: flex;
   flex: 1;
+  padding: 0.2em;
   justify-content: space-around;
   align-items: center;
 }
 
 .deal-grid-container-center > div{
+  font-size: inherit;
   display: flex;
-  padding-top: 0;
   height: 100%;
   align-items: center;
   justify-content: center;
 }
 
 .deal-grid-container-center > div > span{
+  display: flex;
+  font-size: 1em;
   border: 2px white solid;
   border-radius: 100%;
-  height: 85%;
+  width: 2em;
   aspect-ratio: 1;
-  text-align: center;
+  align-items: center;
+  justify-content: center;
 }
 
 .deal-grid-container-center > div:nth-child(2){
-  box-sizing: border-box;
   display: flex;
   justify-content: space-between;
   width:100%;
-  padding-left: 0.2rem;
-  padding-right: 0.2rem;
 }
 
 .vul-n > div:nth-child(odd) > span{
@@ -232,7 +246,7 @@
   column-gap: 10px;
   align-items: center;
   flex-wrap: wrap;
-  justify-content: center;
+  justify-content: left
 }
 
 .tags-container > span{
@@ -252,7 +266,7 @@
 /*End of center piece setup*/
 /*End of interactive deal creation element*/
 
-/*Deal creator container*/
+/* Deal creator container */
 .deal-creator-container{
   display: flex;
   width: 300px;
@@ -268,7 +282,7 @@
   padding-right: 10px;
 }
 
-/*Comment section setup*/
+/* Comment section setup */
 .create-comment-section{
   display: flex;
   width: 100%;
@@ -302,4 +316,48 @@
   flex-direction: row;
   justify-content: space-around;
   width: 50%;
+}
+
+/* all deals container */
+.all-deals-container{
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  width: 100%;
+}
+
+/* Deal list item setup */
+.deal-list-item{
+  display: flex;
+  flex-direction: column;
+  padding: 2rem;
+  border: 2px solid white;
+  border-radius: 0.5rem;
+  margin: 1rem;
+  justify-content:space-between;
+  cursor: pointer;
+}
+
+.deal-list-item:hover{
+  border: rgb(40, 89, 5) 2px solid;
+}
+
+.deal-list-item > div:nth-child(3){
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.deal-list-item > div:last-child{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+}
+
+.deal-list-item > div:last-child > span{
+  font-size: 0.7rem;
+  margin-top: 1rem;
 }

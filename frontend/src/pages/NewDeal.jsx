@@ -96,7 +96,9 @@ const NewDeal = ({ client }) => {
   return (
     <div className="new-deal-container">
       <div className="new-deal-container-first-row">
-        <DealCreator deal={deal.deal_info} selectedTags={comment.tags} />
+        <div className="deal-container">
+          <DealCreator deal={deal.deal_info} selectedTags={comment.tags} />
+        </div>
         <div className="deal-creator-container">
           <div><span>N</span><input data-player="N" value={deal.deal_info.N} onChange={handleChange}></input></div>
           <div><span>S</span><input data-player="S" value={deal.deal_info.S} onChange={handleChange}></input></div>

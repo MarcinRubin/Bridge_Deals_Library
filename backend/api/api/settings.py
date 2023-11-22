@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     "users.apps.UsersConfig",
     "deals.apps.DealsConfig",
     "rest_framework",
+    "django_filters",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",

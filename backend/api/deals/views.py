@@ -1,19 +1,45 @@
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import generics, status, viewsets
+from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from .models import Deal, Tag
-from .serializers import CommentsSerializer, DealsSerializer, TagsSerializer
+from .serializers import (
+    CommentsSerializer,
+    DealsSerializer,
+    DealsSerializerGeneral,
+    TagsSerializer,
+)
 
 
-class DealsViewSet(viewsets.ViewSet):
+class DealsViewSet(viewsets.ModelViewSet):
+    filter_backends = [DjangoFilterBackend]
     queryset = Deal.objects.all()
+    serializer_action_classes = {
+        "list": DealsSerializerGeneral,
+        "retrieve": DealsSerializerGeneral,
+        "create": DealsSerializer,
+        "my_deals": DealsSerializerGeneral,
+    }
 
-    def create(self, request):
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        if self.action == "my_deals":
+            queryset.filter(author=self.request.user)
+        return queryset
+
+    def get_serializer_class(self):
+        try:
+            return self.serializer_action_classes[self.action]
+        except (KeyError, AttributeError):
+            return super().get_serializer_class()
+
+    def create(self, request, *args, **kwargs):
         deal_data = request.data.get("deal")
         comment_data = request.data.get("comment")
 
         deal_data.update({"author": request.user.id})
-        deal = DealsSerializer(data=deal_data)
+        deal = self.get_serializer(data=deal_data)
         deal.is_valid(raise_exception=True)
         deal_obj = deal.save()
 
@@ -23,6 +49,19 @@ class DealsViewSet(viewsets.ViewSet):
         comment.save()
 
         return Response("Deal was saved successfully!", status=status.HTTP_200_OK)
+
+    @action(detail=False, methods=["get"])
+    def my_deals(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        queryset = queryset.filter(author=request.user)
+
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
 
 
 class TagsView(generics.ListAPIView):

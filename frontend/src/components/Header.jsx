@@ -1,4 +1,11 @@
-const Header = ({user, setActiveSession, client}) => {
+import { useState } from "react";
+
+const Header = ({user, setActiveSession, client, setOption}) => {
+
+  const handleOptionChange = (e) =>{
+    e.preventDefault;
+    setOption(e.target.dataset.option);
+  }
 
   const handleLogout = async (e) =>{
     e.preventDefault;
@@ -17,10 +24,11 @@ const Header = ({user, setActiveSession, client}) => {
         <div className="left-control-panel">
             <div className="logo">LOGO</div>
             <nav className="header-nav">
-                <a>My Deals</a>
-                <a>All Deals</a>
-                <a>My comments</a>
+                <a data-option="1" onClick={handleOptionChange}>Create Deal</a>
+                <a data-option="2" onClick={handleOptionChange}>All Deals</a>
+                <a data-option="2" onClick={handleOptionChange}>My Deals</a>
                 <a>Schedule</a>
+                <a>Profile</a>
             </nav>
         </div>
         <div className="right-control-panel">

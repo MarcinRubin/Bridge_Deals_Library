@@ -44,4 +44,4 @@ class Comment(models.Model):
     deal = models.ForeignKey(
         Deal, on_delete=models.CASCADE, blank=False, null=False, related_name="comments"
     )
-    tags = models.ManyToManyField(Tag)
+    tags = models.ManyToManyField(Tag, related_name="tags")
