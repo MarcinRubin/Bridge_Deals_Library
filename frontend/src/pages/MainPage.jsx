@@ -1,36 +1,28 @@
-import { useState } from "react";
 import Header from "../components/Header";
-import AllDeals from "./AllDeals";
-import NewDeal from "./NewDeal";
+import { Outlet} from "react-router-dom";
+import { redirect, useLoaderData } from "react-router-dom";
+import client from "../hooks/axiosClient";
+
+export async function loader() {
+    const session = await client.get("/api/active_session");
+    if (!session.data.isAuthenticated){
+      return redirect("/login");
+    }
+    return session.data;
+};
 
 
-const MainPage = ({setActiveSession, client, user}) => {
+const MainPage = ({}) => {
 
-  const [option, setOption] = useState("all");
-
-  const query_selector = "my_deals"
+  const {user} = useLoaderData();
   return (
     <>
       <Header
         user = {user}
-        setActiveSession = {setActiveSession}
-        client = {client}
-        setOption = {setOption}
       />
 
     <div className="main-page-container">
-      {option === '1' && <NewDeal
-        client = {client}
-      />}
-      {option === '2' && <AllDeals
-        client = {client}
-        query_selector = {""}
-      />}
-      {option === '3' && <AllDeals
-        query_selector={query_selector}
-        client = {client}
-      />}
-      {option === '4' && <div>Option 4</div>}
+      <Outlet context={user}/>
     </div>
     </>
   )

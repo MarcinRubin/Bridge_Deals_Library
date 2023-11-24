@@ -1,10 +1,10 @@
 import DealListElement from "../components/DealListElement";
 import client from "../hooks/axiosClient";
-import { useLoaderData } from "react-router-dom";
+import { useLoaderData, useOutletContext } from "react-router-dom";
 
 export async function loader() {
   try{
-      const response = await client.get("/api/deals/");
+      const response = await client.get("/api/deals/mydeals");
       return response.data;
   }
   catch(err){
@@ -13,9 +13,10 @@ export async function loader() {
   return [];
 };
 
-const AllDeals = () => {
+const MyDeals = () => {
 
   const deals = useLoaderData();
+  const user = useOutletContext();
 
   return (
     <div className="all-deals-container">
@@ -30,4 +31,4 @@ const AllDeals = () => {
   )
 }
 
-export default AllDeals
+export default MyDeals

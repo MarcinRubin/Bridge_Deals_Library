@@ -14,7 +14,7 @@ class Tag(models.Model):
 class Tournament(models.Model):
     name = models.CharField(max_length=100)
     date = models.DateField()
-    series = models.CharField()
+    series = models.CharField(max_length=100)
 
     def __str__(self):
         return f"{self.name}"

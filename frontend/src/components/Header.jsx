@@ -1,18 +1,15 @@
-import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import client from "../hooks/axiosClient";
 
-const Header = ({user, setActiveSession, client, setOption}) => {
+const Header = ({user}) => {
 
-  const handleOptionChange = (e) =>{
-    e.preventDefault;
-    setOption(e.target.dataset.option);
-  }
+  const navigate = useNavigate();
 
   const handleLogout = async (e) =>{
     e.preventDefault;
     try{
       const response = await client.post("/api/logout/");
-      if(response.status !== 200) throw new Error('Response status is not 200')
-      setActiveSession(false);
+      navigate("/login");
     }
     catch(err){
       console.log(err);
@@ -24,11 +21,11 @@ const Header = ({user, setActiveSession, client, setOption}) => {
         <div className="left-control-panel">
             <div className="logo">LOGO</div>
             <nav className="header-nav">
-                <a data-option="1" onClick={handleOptionChange}>Create Deal</a>
-                <a data-option="2" onClick={handleOptionChange}>All Deals</a>
-                <a data-option="2" onClick={handleOptionChange}>My Deals</a>
-                <a>Schedule</a>
-                <a>Profile</a>
+              <ul>
+                <li><Link to={`create`}>Create Deal</Link></li>
+                <li><Link to={`deals`}>All Deals</Link></li>
+                <li><Link to={'mydeals'}> My Deals</Link></li>
+              </ul>
             </nav>
         </div>
         <div className="right-control-panel">

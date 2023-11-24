@@ -1,8 +1,11 @@
 import DealCreator from "../components/DealCreator";
 import { useState, useEffect } from "react";
+import client from "../hooks/axiosClient";
+import { useNavigate } from "react-router-dom";
 
-const NewDeal = ({ client }) => {
+const NewDeal = ({}) => {
 
+  const navigate = useNavigate();
 
   const [deal, setDeal] = useState({
     deal_info: {
@@ -43,7 +46,7 @@ const NewDeal = ({ client }) => {
 
   const handleChange = (e) => {
     const player = e.target.dataset.player;
-    const new_deal_info = {...deal.deal_info, [player]: e.target.value}
+    const new_deal_info = {...deal.deal_info, [player]: e.target.value};
     setDeal({ ...deal, "deal_info": new_deal_info });
   };
 
@@ -55,13 +58,13 @@ const NewDeal = ({ client }) => {
   }
 
   const handleChangePlayer = (e) =>{
-    const new_deal_info = {...deal.deal_info, player: e.target.value}
+    const new_deal_info = {...deal.deal_info, player: e.target.value};
     setDeal({ ...deal, "deal_info": new_deal_info });
   }
 
   const handleChangeName = (e) =>{
-    const new_deal = {...deal, "name": e.target.value}
-    setDeal(new_deal)
+    const new_deal = {...deal, "name": e.target.value};
+    setDeal(new_deal);
   }
 
   //To do przeniesienia do tag component
@@ -88,6 +91,7 @@ const NewDeal = ({ client }) => {
     try {
       const response = await client.post("/api/deals/", {"deal": deal, "comment": comment});
       console.log(response.data);
+      navigate("/deals");
     } catch (err) {
       console.log(err.response.data);
     }

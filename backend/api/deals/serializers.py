@@ -31,6 +31,7 @@ class DealsSerializerGeneral(serializers.ModelSerializer):
     class Meta:
         model = Deal
         fields = (
+            "id",
             "name",
             "tournament",
             "deal_info",

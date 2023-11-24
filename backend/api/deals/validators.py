@@ -1,15 +1,19 @@
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 
+DEALS_PLAYER = {"N", "S", "E", "W"}
+DEALS_PARAMETERS = {"vul", "player"}
+DEALS_KEYS = DEALS_PLAYER | DEALS_PARAMETERS
+CARDS_IN_SUIT = {"2", "3", "4", "5", "6", "7", "8", "9", "T", "J", "Q", "K", "A"}
+
 
 def validate_deal(deal_info):
-    expected_keys = {"N", "vul", "E", "W", "player", "S"}
-    if expected_keys != set(deal_info.keys()):
+    if DEALS_KEYS != set(deal_info.keys()):
         raise ValidationError("Deal data is incomplete")
 
-    validate_player(deal_info.get("player"))
-    validate_vul(deal_info.get("vul"))
-    validate_deck(
+    _validate_player(deal_info.get("player"))
+    _validate_vul(deal_info.get("vul"))
+    _validate_deck(
         n=deal_info.get("N"),
         s=deal_info.get("S"),
         e=deal_info.get("E"),
@@ -17,21 +21,19 @@ def validate_deal(deal_info):
     )
 
 
-def validate_player(player):
-    expected_players = {"N", "S", "E", "W"}
-    if player not in expected_players:
+def _validate_player(player):
+    if player not in DEALS_PLAYER:
         raise ValidationError("Invalid player name")
 
 
-def validate_vul(vul):
+def _validate_vul(vul):
     if len(vul) != 2:
         raise ValidationError("There should be 2 elements in vulnerability vector")
     if not isinstance(vul[0], bool) or not isinstance(vul[1], bool):
         raise ValidationError("In vulnerability list only boolean types are valid")
 
 
-def validate_deck(**kwargs):
-    cards_in_suit = {"2", "3", "4", "5", "6", "7", "8", "9", "T", "J", "Q", "K", "A"}
+def _validate_deck(**kwargs):
     suits = {"spades": [], "hearts": [], "diamonds": [], "clubs": []}
 
     for player, cards in kwargs.items():
@@ -55,7 +57,7 @@ def validate_deck(**kwargs):
             suit.extend(batch)
 
     for suit, cards in suits.items():
-        if set(cards) != cards_in_suit:
+        if set(cards) != CARDS_IN_SUIT:
             raise ValidationError(
                 _("Card in %(value)s is repeated"),
                 code="invalid",

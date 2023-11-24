@@ -17,14 +17,14 @@ class DealsViewSet(viewsets.ModelViewSet):
     queryset = Deal.objects.all()
     serializer_action_classes = {
         "list": DealsSerializerGeneral,
-        "retrieve": DealsSerializerGeneral,
+        "retrieve": DealsSerializer,
         "create": DealsSerializer,
-        "my_deals": DealsSerializerGeneral,
+        "mydeals": DealsSerializerGeneral,
     }
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        if self.action == "my_deals":
+        if self.action == "mydeals":
             queryset.filter(author=self.request.user)
         return queryset
 
@@ -51,7 +51,7 @@ class DealsViewSet(viewsets.ModelViewSet):
         return Response("Deal was saved successfully!", status=status.HTTP_200_OK)
 
     @action(detail=False, methods=["get"])
-    def my_deals(self, request, *args, **kwargs):
+    def mydeals(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
         queryset = queryset.filter(author=request.user)
 

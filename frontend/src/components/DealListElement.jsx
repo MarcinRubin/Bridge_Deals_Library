@@ -1,10 +1,19 @@
 import DealCreator from "./DealCreator";
 import TagsContainer from "./TagsContainer";
+import { useNavigate } from "react-router-dom";
+
 
 const DealListElement = ({deal}) => {
 
+const navigate = useNavigate();
+
+const handleClick = () =>{
+    console.log("Clicked");
+    return navigate(`/deals/${deal.id}`)
+}
+
 return (
-    <div className="deal-list-item">
+    <div className="deal-list-item" onClick={handleClick}>
     <>
     <div className="deal-container">
         <DealCreator
