@@ -1,12 +1,12 @@
-import LoginForm from "../components/LoginForm"
-import RegisterForm from "../components/RegisterForm"
+import LoginForm from "./LoginForm"
+import RegisterForm from "./RegisterForm"
 import { useState } from "react"
 
 const Authentication = ({setActiveSession, client, setActiveUser}) => {
     const [isLogin, setIsLogin] = useState(true)
 
   return (
-    <div>
+    <div className="login-register-container">
         {isLogin && <LoginForm
             setIsLogin = {setIsLogin}
             setActiveSession = {setActiveSession}

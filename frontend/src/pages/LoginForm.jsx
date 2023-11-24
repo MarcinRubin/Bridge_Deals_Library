@@ -1,33 +1,42 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import { useNavigate, Link, redirect } from "react-router-dom";
+import client from "../hooks/axiosClient";
 
-const LoginForm = ({setIsLogin, setActiveSession, client, setActiveUser}) => {
+export async function loader() {
+  const session = await client.get("/api/active_session");
+  if (session.data.isAuthenticated){
+    return redirect("/");
+  }
+  return session.data;
+};
+
+const LoginForm = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [loginError, setLoginError] = useState(false)
+    const navigate = useNavigate();
 
     const handleLogin = async (e) =>{
         e.preventDefault();
         try{
+          const retrieve_csrf_cookie = await client.get("/api/csrf_cookie/");
           const response = await client.post(
               "/api/login/",
               {
                 email: email,
                 password: password
               }
-          )
-          if(response.status === 200) {
-            setActiveSession(true);
-            setActiveUser(reposne.data['email'])
-          }
+          );
+          navigate("/");
         }
         catch(err){
-          setLoginError(true)
+          setLoginError(true);
         }
     }
 
-
     return (
-    <div>
+      <div className="login-register-container">
+        <div>
         <form onSubmit={handleLogin}>
             <div className="form-container">
                 <h2>Please sign in</h2>
@@ -36,10 +45,11 @@ const LoginForm = ({setIsLogin, setActiveSession, client, setActiveUser}) => {
                 <label>Password</label>
                 <input type="password" placeholder="Enter Password" name="password" required onChange={e => setPassword(e.target.value)}/>
                 <button type="submit">Login</button>
-                <span>Don't have an account? <a onClick={e => setIsLogin(false)}>Register now!</a></span>
+                <span>Don't have an account? <Link to={"/register"}>Register Now!</Link></span>
                 {loginError && <span className="error-message">Invalid login and/or password! Try again!</span>}
             </div>
         </form>
+    </div>
     </div>
   )
 }

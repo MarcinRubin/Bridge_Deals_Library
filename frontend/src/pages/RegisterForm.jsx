@@ -1,12 +1,14 @@
 import { useState } from "react";
+import client from "../hooks/axiosClient";
+import { useNavigate, Link, redirect } from "react-router-dom";
 
-
-const RegisterForm = ({setIsLogin, client}) => {
+const RegisterForm = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [password2, setPassword2] = useState('');
   const [registerError, setRegisterError] = useState('')
 
+  const navigate = useNavigate();
 
   const handleRegister = async (e) =>{
     e.preventDefault();
@@ -19,6 +21,7 @@ const RegisterForm = ({setIsLogin, client}) => {
             confirm_password: password2
           }
       );
+      navigate("/login")
     }
     catch(err){
       const response = JSON.parse(err.request.response);
@@ -42,7 +45,7 @@ const RegisterForm = ({setIsLogin, client}) => {
               <input type="password" placeholder="Enter Password" name="password2" required onChange={e => setPassword2(e.target.value)}/>
               <button type="submit">Register</button>
               {registerError && <span className="error-message">{registerError}</span>}
-              <span>Have an account already? <a onClick={e => setIsLogin(true)}>Login now!</a></span>
+              <span>Have an account already? <Link to={"/login"}>Login Now!</Link></span>
           </div>
       </form>
   </div>

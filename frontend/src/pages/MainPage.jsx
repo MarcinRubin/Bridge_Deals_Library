@@ -1,22 +1,30 @@
-const MainPage = ({setActiveSession, client, user}) => {
+import Header from "../components/Header";
+import { Outlet} from "react-router-dom";
+import { redirect, useLoaderData } from "react-router-dom";
+import client from "../hooks/axiosClient";
 
-  const handleLogout = async (e) =>{
-    e.preventDefault;
-    try{
-      const response = await client.post("/api/logout/");
-      if(response.status !== 200) throw new Error('Response status is not 200')
-      setActiveSession(false);
+export async function loader() {
+    const session = await client.get("/api/active_session");
+    if (!session.data.isAuthenticated){
+      return redirect("/login");
     }
-    catch(err){
-      console.log(err);
-    }
-  }
+    return session.data;
+};
 
+
+const MainPage = ({}) => {
+
+  const {user} = useLoaderData();
   return (
-    <div className="main-container">
-      <div>You are logged as {user}</div>
-      <button className="logout" onClick={handleLogout}>Log out</button>
+    <>
+      <Header
+        user = {user}
+      />
+
+    <div className="main-page-container">
+      <Outlet context={user}/>
     </div>
+    </>
   )
 }
 

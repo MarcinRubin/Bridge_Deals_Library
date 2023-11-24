@@ -1,3 +1,16 @@
+.main{
+  height: 100vh;
+}
+
+
+/*css for login/register part of the app*/
+.login-register-container{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+
 .form-container{
   display: flex;
   flex-direction: column;
@@ -25,22 +38,333 @@
   margin-top: 1.5rem;
 }
 
-button{
+.form-container > button{
   margin-top: 1rem;
-  color: white;
 }
 
 .form-container > .error-message{
   color: rgb(190, 8, 38);
 }
 
-.main-container{
+
+/*Begining of header section*/
+.header-container{
+  display: flex;
+  height: 70px;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid white;
+}
+
+.right-control-panel{
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 1rem;
+  margin-right: 10px;
+}
+
+.left-control-panel{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-left: 10px;
+  height: 100%;
+}
+
+.logo{
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  height: 100%;
+  color: rgb(40, 89, 5);
+}
+
+.header-nav{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  gap: 20px;
+}
+
+ul{
+  font-size: 26px;
+  display: flex;
   flex-direction: column;
 }
 
-.main-container > button{
+.header-nav a{
+  display: flex;
+  width: 120px;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  text-decoration: None;
+}
+
+.header-nav > a:hover{
+  background-color: hsl(0, 0%, 20%);
+}
+
+/*testing container for elements*/
+.test-container{
+  display: flex;
+  gap: 10px;
+}
+
+.main-page-container{
+  margin-top: 2rem;
+  margin-left: 1rem;
+  padding: 1rem;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  height: 100%;
+  gap: 50px;
+}
+
+.new-deal-container{
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.new-deal-container-first-row{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  border: 1px solid white;
+  border-radius: 1rem;
+  padding: 50px;
+}
+
+.new-deal-container-tag-row{
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  border: 1px solid white;
+  border-radius: 1rem;
+  padding: 10px;
+  align-items: center;
+  justify-content: center;
+}
+
+
+/*Interactive deal creation element*/
+.deal-container{
+  display: flex;
+  width: 300px;
+  font-size: inherit;
+  flex-direction: column;
+}
+
+.deal-container-small{
+  display: flex;
+  width: 150px;
+  font-size: 0.5rem;
+  flex-direction: column;
+}
+
+.deal-grid-container{
+  font-size: inherit;
+  display: grid;
+  border: 1px solid white;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  width: 100%;
+  aspect-ratio: 1/1;
+}
+
+.deal-grid-container > div{
+  font-size: inherit;
+  border: 1px solid white;
+  display: flex;
+  flex-direction: column;
+}
+
+.deal-grid-container > div:first-child{
+  font-size: 2em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.deal-grid-container > div > span{
+  font-size: 1em;
+  padding-left: 5px;
   display: block;
+  flex: 1 1 0;
+  height: 0;
+}
+
+/*Interactive deal creation element center piece*/
+.deal-grid-container-center{
+  font-size: inherit;
+  display: flex;
+  flex: 1;
+  padding: 0.2em;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.deal-grid-container-center > div{
+  font-size: inherit;
+  display: flex;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+}
+
+.deal-grid-container-center > div > span{
+  display: flex;
+  font-size: 1em;
+  border: 2px white solid;
+  border-radius: 100%;
+  width: 2em;
+  aspect-ratio: 1;
+  align-items: center;
+  justify-content: center;
+}
+
+.deal-grid-container-center > div:nth-child(2){
+  display: flex;
+  justify-content: space-between;
+  width:100%;
+}
+
+.vul-n > div:nth-child(odd) > span{
+  border-color: red;
+}
+
+.vul-e > div:nth-child(even) > span{
+  border-color: red;
+}
+
+.tags-container{
+  display: flex;
+  height: 2rem;
+  flex-direction: row;
+  row-gap: 1rem;
+  column-gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: left
+}
+
+.tags-container > span{
+  border: 2px solid white;
+  border-radius: 1rem;
+  padding: 0.1rem 0.6rem 0.1rem 0.6rem;
+}
+
+.tags-container > span:hover{
+  border: 2px solid white;
+  border-radius: 1rem;
+  padding: 0.1rem 0.6rem 0.1rem 0.6rem;
+  background-color: rgba(104, 104, 104, 0.494);
+  cursor: pointer;
+}
+
+/*End of center piece setup*/
+/*End of interactive deal creation element*/
+
+/* Deal creator container */
+.deal-creator-container{
+  display: flex;
+  width: 300px;
+  flex-direction: column;
+  align-items: center;
+  border: 1px white solid;
+  border-radius: 0.5rem;
+  padding: 10px;
+  gap: 10px;
+}
+
+.deal-creator-container > div > span{
+  padding-right: 10px;
+}
+
+/* Comment section setup */
+.create-comment-section{
+  display: flex;
+  width: 100%;
+  border: 1px white solid;
+  border-radius: 1rem;
+  flex-direction: column;
+}
+
+.create-comment-section > input{
+  width: 100%;
+  padding: 1rem;
+  border-top-left-radius: 1rem;
+  border-top-right-radius: 1rem;
+}
+
+.create-comment-section > textarea{
+  padding: 1rem;
+  border-bottom-left-radius: 1rem;
+  border-bottom-right-radius: 1rem;
+}
+
+.create-save-section{
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: right;
+}
+
+.option-box{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  width: 50%;
+}
+
+/* all deals container */
+.all-deals-container{
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  width: 100%;
+}
+
+/* Deal list item setup */
+.deal-list-item{
+  display: flex;
+  flex-direction: column;
+  padding: 2rem;
+  border: 2px solid white;
+  border-radius: 0.5rem;
+  margin: 1rem;
+  justify-content:space-between;
+  cursor: pointer;
+}
+
+.deal-list-item:hover{
+  border: rgb(40, 89, 5) 2px solid;
+}
+
+.deal-list-item > div:nth-child(3){
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.deal-list-item > div:last-child{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+}
+
+.deal-list-item > div:last-child > span{
+  font-size: 0.7rem;
+  margin-top: 1rem;
 }
