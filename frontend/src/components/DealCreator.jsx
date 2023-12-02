@@ -1,12 +1,14 @@
 const DealCreator = ({deal}) => {
 
+    const suits = ["spade", "heart", "diamond", "club"];
+
   return (
     <div className="deal-grid-container">
         <div>{deal.player}</div>
         <div>
             {
                 deal.N.split('.').map( (item, idx) => (
-                    <span key={idx}>{item}</span>
+                    <span key={idx}><i className={`bi bi-suit-${suits[idx]}-fill`}></i>{item}</span>
                 ))
             }
         </div>
@@ -14,7 +16,7 @@ const DealCreator = ({deal}) => {
         <div>
             {
                 deal.W.split('.').map( (item, idx) => (
-                    <span key={idx}>{item}</span>
+                    <span key={idx}><i className={`bi bi-suit-${suits[idx]}-fill`}></i>{item}</span>
                 ))
             }
         </div>
@@ -33,7 +35,7 @@ const DealCreator = ({deal}) => {
         <div>
             {
                 deal.E.split('.').map( (item, idx) => (
-                    <span key={idx}>{item}</span>
+                    <span key={idx}><i className={`bi bi-suit-${suits[idx]}-fill`}></i>{item}</span>
                 ))
             }
         </div>
@@ -41,7 +43,7 @@ const DealCreator = ({deal}) => {
         <div>
             {
                 deal.S.split('.').map( (item, idx) => (
-                    <span key={idx}>{item}</span>
+                    <span key={idx}><i className={`bi bi-suit-${suits[idx]}-fill`}></i>{item}</span>
                 ))
             }
         </div>
