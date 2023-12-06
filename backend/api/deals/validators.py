@@ -1,18 +1,20 @@
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 
-DEALS_PLAYER = {"N", "S", "E", "W"}
-DEALS_PARAMETERS = {"vul", "player"}
-DEALS_KEYS = DEALS_PLAYER | DEALS_PARAMETERS
+PLAYERS = {"N", "S", "E", "W"}
+DEALS_PARAMETERS = {"vulnerability", "dealer"}
+DEALS_KEYS = PLAYERS | DEALS_PARAMETERS
 CARDS_IN_SUIT = {"2", "3", "4", "5", "6", "7", "8", "9", "T", "J", "Q", "K", "A"}
+SUITS = {"Clubs", "Diamonds", "Hearts", "Spades"}
 
 
 def validate_deal(deal_info):
+    print(deal_info)
     if DEALS_KEYS != set(deal_info.keys()):
         raise ValidationError("Deal data is incomplete")
 
-    _validate_player(deal_info.get("player"))
-    _validate_vul(deal_info.get("vul"))
+    _validate_dealer(deal_info.get("dealer"))
+    _validate_vul(deal_info.get("vulnerability"))
     _validate_deck(
         n=deal_info.get("N"),
         s=deal_info.get("S"),
@@ -21,8 +23,8 @@ def validate_deal(deal_info):
     )
 
 
-def _validate_player(player):
-    if player not in DEALS_PLAYER:
+def _validate_dealer(dealer):
+    if dealer not in PLAYERS:
         raise ValidationError("Invalid player name")
 
 
@@ -36,30 +38,30 @@ def _validate_vul(vul):
 def _validate_deck(**kwargs):
     suits = {"spades": [], "hearts": [], "diamonds": [], "clubs": []}
 
-    for player, cards in kwargs.items():
-        mod_cards = cards.replace("10", "T")
-        if len(mod_cards) != 16:
+    for player, hand in kwargs.items():
+        if set(hand.keys()) != SUITS:
+            raise ValidationError(
+                _("Invalid suits or number of suits in hand of player %(value)s"),
+                code="invalid",
+                params={"value": player},
+            )
+
+        hand_as_vector = [suit.replace("10", "T") for suit in hand.values()]
+        if len("".join(hand_as_vector)) != 13:
             raise ValidationError(
                 _("Wrong number of cards for player %(value)s"),
                 code="invalid",
                 params={"value": player},
             )
 
-        batches = mod_cards.split(".")
-        if len(batches) != 4:
-            raise ValidationError(
-                _("Wrong number of suits for player %(value)s"),
-                code="invalid",
-                params={"value": player},
-            )
+        for suit, batch in zip(hand_as_vector, suits.values()):
+            batch.extend(list(suit))
 
-        for suit, batch in zip(suits.values(), batches):
-            suit.extend(batch)
-
+    print(suits)
     for suit, cards in suits.items():
         if set(cards) != CARDS_IN_SUIT:
             raise ValidationError(
-                _("Card in %(value)s is repeated"),
+                _("Invalid number of cards in %(value)s suit"),
                 code="invalid",
                 params={"value": suit},
             )

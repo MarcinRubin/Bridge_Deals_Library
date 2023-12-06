@@ -1,7 +1,8 @@
+@import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css");
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  background-color: hsl(0, 0%, 15%);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -160,6 +161,14 @@ input:focus, textarea:focus{
   margin-right: 10px;
 }
 
+
+.profile-picture-wrapper > img{
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
 .left-control-panel{
   display: flex;
   flex-direction: row;
@@ -268,7 +277,9 @@ ul{
 .deal-grid-container{
   font-size: inherit;
   display: grid;
-  border: 1px solid white;
+  border: 5px solid hsl(122, 76%, 82%);
+  background-color: hsl(121, 82%, 29%);
+  border-radius: 1rem;
   grid-template-columns: repeat(3, 1fr);
   grid-template-rows: repeat(3, 1fr);
   width: 100%;
@@ -277,7 +288,6 @@ ul{
 
 .deal-grid-container > div{
   font-size: inherit;
-  border: 1px solid white;
   display: flex;
   flex-direction: column;
 }
@@ -318,7 +328,7 @@ ul{
 .deal-grid-container-center > div > span{
   display: flex;
   font-size: 1em;
-  border: 2px white solid;
+  border: 2px black solid;
   border-radius: 100%;
   width: 2em;
   aspect-ratio: 1;
@@ -333,11 +343,11 @@ ul{
 }
 
 .vul-n > div:nth-child(odd) > span{
-  border-color: red;
+  background-color: rgb(234, 32, 32);
 }
 
 .vul-e > div:nth-child(even) > span{
-  border-color: red;
+  background-color: rgb(234, 32, 32);
 }
 
 .tags-container{
@@ -462,4 +472,12 @@ ul{
 .deal-list-item > div:last-child > span{
   font-size: 0.7rem;
   margin-top: 1rem;
+}
+
+.bi-suit-heart-fill, .bi-suit-diamond-fill{
+  color: rgb(234, 32, 32);
+}
+
+.bi-suit-spade-fill, .bi-suit-club-fill{
+  color: hsl(0, 0%, 10%);
 }

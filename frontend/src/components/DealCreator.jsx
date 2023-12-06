@@ -1,24 +1,27 @@
 const DealCreator = ({deal}) => {
 
+    const suits = ["spade", "heart", "diamond", "club"];
+    const color = ["Spades", "Hearts", "Diamonds", "Clubs"]
+
   return (
     <div className="deal-grid-container">
-        <div>{deal.player}</div>
+        <div>{deal.dealer}</div>
         <div>
             {
-                deal.N.split('.').map( (item, idx) => (
-                    <span key={idx}>{item}</span>
+                color.map( (item, idx) => (
+                    <span key={idx}><i className={`bi bi-suit-${suits[idx]}-fill`}></i>{deal.N[item]}</span>
                 ))
             }
         </div>
         <div></div>
         <div>
             {
-                deal.W.split('.').map( (item, idx) => (
-                    <span key={idx}>{item}</span>
+                color.map( (item, idx) => (
+                    <span key={idx}><i className={`bi bi-suit-${suits[idx]}-fill`}></i>{deal.W[item]}</span>
                 ))
             }
         </div>
-        <div className={`deal-grid-container-center ${deal.vul[0] ? "vul-n" : ""} ${deal.vul[1] ? "vul-e" : ""}`}>
+        <div className={`deal-grid-container-center ${deal.vulnerability[0] ? "vul-n" : ""} ${deal.vulnerability[1] ? "vul-e" : ""}`}>
             <div>
                 <span>N</span>
             </div>
@@ -32,16 +35,16 @@ const DealCreator = ({deal}) => {
         </div>
         <div>
             {
-                deal.E.split('.').map( (item, idx) => (
-                    <span key={idx}>{item}</span>
+                color.map( (item, idx) => (
+                    <span key={idx}><i className={`bi bi-suit-${suits[idx]}-fill`}></i>{deal.E[item]}</span>
                 ))
             }
         </div>
         <div></div>
         <div>
             {
-                deal.S.split('.').map( (item, idx) => (
-                    <span key={idx}>{item}</span>
+                color.map( (item, idx) => (
+                    <span key={idx}><i className={`bi bi-suit-${suits[idx]}-fill`}></i>{deal.S[item]}</span>
                 ))
             }
         </div>

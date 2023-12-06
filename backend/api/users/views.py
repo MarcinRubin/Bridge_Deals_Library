@@ -65,5 +65,11 @@ class ActiveSession(APIView):
 
     def get(self, request):
         if request.user.is_authenticated:
-            return JsonResponse({"isAuthenticated": True, "user": request.user.email})
+            return JsonResponse(
+                {
+                    "user": request.user.email,
+                    "isAuthenticated": True,
+                    "profile_pic": request.user.profile.image.url,
+                }
+            )
         return JsonResponse({"isAuthenticated": False})

@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import User
+from .models import Profile, User
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -32,3 +32,9 @@ class UserSerializer(serializers.ModelSerializer):
         user_obj.is_active = True
         user_obj.save()
         return user_obj
+
+
+class ProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Profile
+        fields = ["image"]
