@@ -1,7 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import client from "../hooks/axiosClient";
 
-const Header = ({user}) => {
+const Header = ({user, profile_pic}) => {
 
   const navigate = useNavigate();
 
@@ -29,6 +29,7 @@ const Header = ({user}) => {
             </nav>
         </div>
         <div className="right-control-panel">
+            <div className="profile-picture-wrapper"><img src={profile_pic} alt="" /></div>
             <span className='username-tag'>{user}</span>
             <button className="logout" onClick={handleLogout}>Log out</button>
         </div>

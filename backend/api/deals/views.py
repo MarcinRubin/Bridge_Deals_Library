@@ -1,7 +1,9 @@
+from deals_scrapper.deal_scrapper import deal_scrapper
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import generics, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from .models import Deal, Tag
 from .serializers import (
@@ -67,3 +69,17 @@ class DealsViewSet(viewsets.ModelViewSet):
 class TagsView(generics.ListAPIView):
     serializer_class = TagsSerializer
     queryset = Tag.objects.all()
+
+
+class ScrapView(APIView):
+    http_method_names = ["post"]
+
+    def post(self, request):
+        url = request.data.get("url")
+        scrapper = deal_scrapper(url)
+        response = {
+            **scrapper.get_deal(),
+            **scrapper.get_dealer(),
+            **scrapper.get_vulnerability(),
+        }
+        return Response(response, status=status.HTTP_200_OK)

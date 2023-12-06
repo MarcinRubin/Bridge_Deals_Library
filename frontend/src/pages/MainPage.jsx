@@ -8,17 +8,19 @@ export async function loader() {
     if (!session.data.isAuthenticated){
       return redirect("/login");
     }
+    //console.log(session.data);
     return session.data;
 };
 
 
 const MainPage = ({}) => {
 
-  const {user} = useLoaderData();
+  const {user, profile_pic} = useLoaderData();
   return (
     <>
       <Header
         user = {user}
+        profile_pic = {profile_pic}
       />
 
     <div className="main-page-container">

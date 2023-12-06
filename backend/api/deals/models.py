@@ -1,5 +1,5 @@
 from django.db import models
-from users.models import User
+from users.models import Profile, User
 
 from .validators import validate_deal
 
@@ -40,8 +40,11 @@ class Comment(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     visibility = models.BooleanField(default=True)
     difficulty = models.IntegerField(blank=False, null=False)
-    author = models.ForeignKey(User, on_delete=models.CASCADE, blank=False, null=False)
+    author = models.ForeignKey(
+        Profile, on_delete=models.CASCADE, blank=False, null=False
+    )
     deal = models.ForeignKey(
         Deal, on_delete=models.CASCADE, blank=False, null=False, related_name="comments"
     )
+    directory = models.CharField(max_length=100, default="other")
     tags = models.ManyToManyField(Tag, related_name="tags")
