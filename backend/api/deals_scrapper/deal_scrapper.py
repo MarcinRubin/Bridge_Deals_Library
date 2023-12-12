@@ -60,7 +60,6 @@ class deal_scrapper:
         return score_table
 
 
-URL = "https://www.warsbrydz.pl/wyniki/1krok/PK231127/p1.json"
 # deal = deal_scrapper(URL)
 # ans = {**deal.get_deal(), **deal.get_dealer(), **deal.get_vulnerability()}
 # print(ans)

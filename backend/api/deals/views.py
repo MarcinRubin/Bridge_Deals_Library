@@ -5,7 +5,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .models import Deal, Tag
+from .models import Comment, Deal, Tag
 from .serializers import (
     CommentsSerializer,
     DealsSerializer,
@@ -14,11 +14,52 @@ from .serializers import (
 )
 
 
+class CommentViewSet(viewsets.ModelViewSet):
+    queryset = Comment.objects.all()
+    serializer_class = CommentsSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = [
+        "directory",
+    ]
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        if self.action == "my_comments":
+            queryset = queryset.filter(author=self.request.user.profile)
+        return queryset
+
+    def create(self, request, *args, **kwargs):
+        data = request.data
+        data.update({"author": request.user.profile.id})
+        data["deal"].update({"author": request.user.profile.id})
+        comment = self.get_serializer(data=data)
+        comment.is_valid(raise_exception=True)
+        comment.save()
+        headers = self.get_success_headers(comment.data)
+        return Response(
+            {"Result": "Deal was succesfully saved!"},
+            status=status.HTTP_201_CREATED,
+            headers=headers,
+        )
+
+    @action(detail=False, methods=["get"])
+    def my_comments(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+
+
 class DealsViewSet(viewsets.ModelViewSet):
     filter_backends = [DjangoFilterBackend]
     queryset = Deal.objects.all()
     serializer_action_classes = {
-        "list": DealsSerializerGeneral,
+        "list": DealsSerializer,
         "retrieve": DealsSerializer,
         "create": DealsSerializer,
         "mydeals": DealsSerializerGeneral,
@@ -38,14 +79,14 @@ class DealsViewSet(viewsets.ModelViewSet):
 
     def create(self, request, *args, **kwargs):
         deal_data = request.data.get("deal")
-        comment_data = request.data.get("comment")
+        comment_data = request.data.get("comment", {})
 
         deal_data.update({"author": request.user.id})
         deal = self.get_serializer(data=deal_data)
         deal.is_valid(raise_exception=True)
         deal_obj = deal.save()
 
-        comment_data.update({"author": request.user.id, "deal": deal_obj.id})
+        comment_data.update({"author": request.user.profile.id, "deal": deal_obj.id})
         comment = CommentsSerializer(data=comment_data)
         comment.is_valid(raise_exception=True)
         comment.save()
@@ -82,4 +123,5 @@ class ScrapView(APIView):
             **scrapper.get_dealer(),
             **scrapper.get_vulnerability(),
         }
+        print(scrapper.get_deal_tricks())
         return Response(response, status=status.HTTP_200_OK)

@@ -7,7 +7,6 @@ const NewDeal = ({}) => {
 
   const navigate = useNavigate();
   const [link, setLink] = useState("");
-
   const [deal, setDeal] = useState({
     deal_info: {
       N: {
@@ -48,13 +47,34 @@ const NewDeal = ({}) => {
     body: "Comment"
   })
 
+  const handleSaveDeal = async (e) => {
+    try {
+      const response = await client.post("/api/comments/", {"deal": deal, ...comment});
+      console.log(response.data);
+      //navigate("/deals");
+    } catch (err) {
+      console.log(err.response.data);
+    }
+  };
+
+  const handleSubmit = async (e) =>{
+    try {
+      const response = await client.post("/api/scrap_deal/", {url: link});
+      const new_deal_info = response.data;
+      const new_deal = {...deal, deal_info: new_deal_info}
+      setDeal(new_deal)
+    } catch (err) {
+      console.log(err.response.data);
+    }
+  }
+
   const [tags, setTags] = useState([]);
   const [currentTag, setCurrentTag] = useState("first");
 
   useEffect(() => {
     const fetchTags = async () => {
       try {
-        const response = await client.get("/api/deals/tags/");
+        const response = await client.get("/api/tags/");
         setTags(response.data);
         setCurrentTag(response.data[0].name);
       } catch (err) {
@@ -121,26 +141,7 @@ const NewDeal = ({}) => {
   };
   ///////////////////////////////////////
 
-  const handleSaveDeal = async (e) => {
-    try {
-      const response = await client.post("/api/deals/", {"deal": deal, "comment": comment});
-      console.log(response.data);
-      navigate("/deals");
-    } catch (err) {
-      console.log(err.response.data);
-    }
-  };
 
-  const handleSubmit = async (e) =>{
-    try {
-      const response = await client.post("/api/deals/scrap_deal/", {url: link});
-      const new_deal_info = response.data;
-      const new_deal = {...deal, deal_info: new_deal_info}
-      setDeal(new_deal)
-    } catch (err) {
-      console.log(err.response.data);
-    }
-  }
 
   return (
     <div className="new-deal-container">

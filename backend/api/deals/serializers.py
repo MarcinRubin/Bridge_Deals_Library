@@ -17,13 +17,15 @@ class TournamentsSerializer(serializers.ModelSerializer):
 
 
 class DealsSerializer(serializers.ModelSerializer):
+    author = serializers.SlugRelatedField(read_only=True, slug_field="username")
+
     class Meta:
         model = Deal
         fields = "__all__"
 
 
 class DealsSerializerGeneral(serializers.ModelSerializer):
-    author = serializers.SlugRelatedField(read_only=True, slug_field="email")
+    author = serializers.SlugRelatedField(read_only=True, slug_field="username")
     avg_difficulty = serializers.SerializerMethodField(read_only=True)
     most_popular_tags = serializers.SerializerMethodField(read_only=True)
     created_at = serializers.DateTimeField(format="%d %B %Y")
@@ -54,10 +56,18 @@ class DealsSerializerGeneral(serializers.ModelSerializer):
 
 
 class CommentsSerializer(serializers.ModelSerializer):
+    author = serializers.SlugRelatedField(read_only=True, slug_field="username")
     tags = serializers.SlugRelatedField(
         many=True, queryset=Tag.objects.all(), slug_field="name"
     )
+    deal = DealsSerializer()
 
     class Meta:
         model = Comment
         fields = "__all__"
+
+    def create(self, validated_data):
+        deal_data = validated_data.pop("deal")
+        deal = Deal.objects.create(**deal_data)
+        validated_data.update({"deal": deal})
+        return super().create(validated_data)

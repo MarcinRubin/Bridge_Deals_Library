@@ -4,7 +4,7 @@ import client from "../hooks/axiosClient";
 export async function loader({params}) {
     const deal_id = params.dealId;
     try{
-        const response = await client.get(`/api/deals/${deal_id}`);
+        const response = await client.get(`/api/comments/${deal_id}`);
         return response.data;
     }
     catch{
@@ -14,7 +14,7 @@ export async function loader({params}) {
 };
 
 
-const Deal = () => {
+const MyDeal = () => {
 
     const deal = useLoaderData();
 
@@ -30,4 +30,4 @@ const Deal = () => {
   )
 }
 
-export default Deal
+export default MyDeal

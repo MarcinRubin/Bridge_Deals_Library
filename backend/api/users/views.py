@@ -67,7 +67,7 @@ class ActiveSession(APIView):
         if request.user.is_authenticated:
             return JsonResponse(
                 {
-                    "user": request.user.email,
+                    "profile": request.user.profile.username,
                     "isAuthenticated": True,
                     "profile_pic": request.user.profile.image.url,
                 }

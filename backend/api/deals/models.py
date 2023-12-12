@@ -29,17 +29,17 @@ class Deal(models.Model):
     result_table = models.JSONField(blank=True, null=True)
     trick_table = models.JSONField(blank=True, null=True)
     author = models.ForeignKey(
-        User, on_delete=models.CASCADE, blank=False, null=False, related_name="deals"
+        Profile, on_delete=models.CASCADE, blank=False, null=False, related_name="deals"
     )
     created_at = models.DateTimeField(auto_now_add=True)
     visibility = models.BooleanField()
 
 
 class Comment(models.Model):
-    body = models.TextField(blank=False, null=False)
+    body = models.TextField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     visibility = models.BooleanField(default=True)
-    difficulty = models.IntegerField(blank=False, null=False)
+    difficulty = models.IntegerField(blank=True, null=True)
     author = models.ForeignKey(
         Profile, on_delete=models.CASCADE, blank=False, null=False
     )
@@ -47,4 +47,4 @@ class Comment(models.Model):
         Deal, on_delete=models.CASCADE, blank=False, null=False, related_name="comments"
     )
     directory = models.CharField(max_length=100, default="other")
-    tags = models.ManyToManyField(Tag, related_name="tags")
+    tags = models.ManyToManyField(Tag, related_name="tags", blank=True)

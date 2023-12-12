@@ -1,10 +1,11 @@
 from django.urls import path
 from rest_framework import routers
 
-from .views import DealsViewSet, ScrapView, TagsView
+from .views import CommentViewSet, DealsViewSet, ScrapView, TagsView
 
 router = routers.DefaultRouter()
-router.register(r"", DealsViewSet)
+router.register(r"deals", DealsViewSet)
+router.register(r"comments", CommentViewSet)
 
 urlpatterns = [
     path("tags/", TagsView.as_view(), name="tags-view"),
