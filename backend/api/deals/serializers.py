@@ -1,5 +1,6 @@
 from django.db.models import Avg, Count
 from rest_framework import serializers
+from users.models import Profile
 
 from .models import Comment, Deal, Tag, Tournament
 
@@ -17,7 +18,9 @@ class TournamentsSerializer(serializers.ModelSerializer):
 
 
 class DealsSerializer(serializers.ModelSerializer):
-    author = serializers.SlugRelatedField(read_only=True, slug_field="username")
+    author = serializers.SlugRelatedField(
+        slug_field="username", queryset=Profile.objects.all()
+    )
 
     class Meta:
         model = Deal
@@ -56,11 +59,13 @@ class DealsSerializerGeneral(serializers.ModelSerializer):
 
 
 class CommentsSerializer(serializers.ModelSerializer):
-    author = serializers.SlugRelatedField(read_only=True, slug_field="username")
     tags = serializers.SlugRelatedField(
-        many=True, queryset=Tag.objects.all(), slug_field="name"
+        many=True, slug_field="name", queryset=Tag.objects.all()
     )
     deal = DealsSerializer()
+    author = serializers.SlugRelatedField(
+        slug_field="username", queryset=Profile.objects.all()
+    )
 
     class Meta:
         model = Comment
@@ -68,6 +73,6 @@ class CommentsSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         deal_data = validated_data.pop("deal")
-        deal = Deal.objects.create(**deal_data)
-        validated_data.update({"deal": deal})
+        deal_instance = Deal.objects.create(**deal_data)
+        validated_data.update({"deal": deal_instance})
         return super().create(validated_data)

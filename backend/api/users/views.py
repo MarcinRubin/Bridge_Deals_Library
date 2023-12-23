@@ -2,11 +2,12 @@ from django.contrib.auth import authenticate, login, logout
 from django.http import JsonResponse
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_protect, ensure_csrf_cookie
-from rest_framework import permissions, status
+from rest_framework import generics, mixins, permissions, status, viewsets
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .serializers import UserSerializer
+from .models import Profile
+from .serializers import ProfileDirectoriesSerializer, UserSerializer
 
 
 @method_decorator(ensure_csrf_cookie, name="dispatch")
@@ -73,3 +74,11 @@ class ActiveSession(APIView):
                 }
             )
         return JsonResponse({"isAuthenticated": False})
+
+
+class ProfileDirectoryView(generics.RetrieveUpdateAPIView):
+    queryset = Profile.objects.all()
+    serializer_class = ProfileDirectoriesSerializer
+
+    def get_object(self):
+        return self.request.user.profile

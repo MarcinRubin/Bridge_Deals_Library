@@ -2,14 +2,16 @@ import { CSSTransition } from "react-transition-group";
 import { useRef } from "react";
 import React from 'react'
 import { Link } from "react-router-dom";
+import useOutsideClick from "../hooks/useOutsideClick";
 
-const DropMenu = ({isActive, xtranslate, ytranslate, width, children}) => {
+const DropMenu = ({isActive, toggle, xtranslate, ytranslate, width, children}) => {
 
   const nodeRef = useRef(null);
   width = width ? width : 200;
 
+
   return (
-        <CSSTransition nodeRef={nodeRef} in={isActive} timeout={400} classNames="drop-menu" unmountOnExit>
+        <CSSTransition nodeRef={nodeRef} in={isActive} timeout={400} classNames="drop-menu" unmountOnExit >
           <nav className="drop-menu" style={{'--translate': xtranslate, '--top': ytranslate, '--dropmenu-width': width}} ref={nodeRef}>
             {children}
           </nav>
@@ -17,13 +19,24 @@ const DropMenu = ({isActive, xtranslate, ytranslate, width, children}) => {
   );
 };
 
-const DropMenuElement = ({text, icon, handleClick}) => {
+const DropMenuElement = ({text, icon, onClick}) => {
   return (
         <li>
             <a href="#">
                 <i className={icon}></i>
-                <span onClick={handleClick ? handleClick : null}>{text}</span>
+                <span onClick={onClick ? onClick : null}>{text}</span>
             </a>
+        </li>
+    );
+};
+
+const DropMenuElementText = ({text, icon, onClick}) => {
+  return (
+        <li>
+            <span>
+                <i className={icon}></i>
+                <span onClick={onClick}>{text}</span>
+            </span>
         </li>
     );
 };
@@ -47,4 +60,19 @@ const DropMenuHeader = ({children}) => {
   );
 }
 
-export {DropMenu, DropMenuElement, DropMenuElementLink, DropMenuHeader}
+const DropMenuElementParams = ({text, icon, onClick}) => {
+  const test = (value) => {
+    console.log(value);
+  }
+
+  return (
+        <li onClick={() => onClick(text)}>
+            <span>
+                <i className={icon}></i>
+                <span>{text}</span>
+            </span>
+        </li>
+    );
+};
+
+export {DropMenu, DropMenuElement, DropMenuElementLink, DropMenuHeader, DropMenuElementParams, DropMenuElementText}

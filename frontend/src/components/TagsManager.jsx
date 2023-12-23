@@ -3,10 +3,9 @@ import client from '../hooks/axiosClient';
 import useToggle from '../hooks/useToggle';
 import { DropMenu, DropMenuElement } from './DropMenu';
 
-const TagsManager = () => {
+const TagsManager = ({currentTags, setCurrentTags}) => {
 
     const [tags, setTags] = useState([]);
-    const [currentTags, setCurrentTags] = useState([])
     const [isActive, toggle] = useToggle(false);
 
     useEffect(() => {
@@ -23,13 +22,14 @@ const TagsManager = () => {
       }, []);
 
       const handleTagAdd = (e) =>{
+        e.preventDefault();
         if (!currentTags.includes(e.target.innerText)){
             setCurrentTags([...currentTags, e.target.innerText])
         }
       }
 
       const handleTagRemove = (e, idx) => {
-
+        e.preventDefault();
         const newTags = currentTags.filter(item => item !== currentTags[idx]);
         setCurrentTags(newTags);
       }

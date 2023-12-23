@@ -29,9 +29,9 @@ const Header = ({profile, profile_pic}) => {
               <ul>
                 <li className ="drop-menu-wrapper" onClick={toggleDeal} style={{backgroundColor: dealMenu ? "var(--green-darker-color)" : ""}}>
                   <a>New Deal <i className={dealMenu ? 'bi bi-caret-up-fill' : 'bi bi-caret-down-fill'}></i></a>
-                  <DropMenu  isActive={dealMenu} xtranslate={0} ytranslate={80}>
+                  <DropMenu  isActive={dealMenu} toggle={toggleDeal} xtranslate={0} ytranslate={80}>
                     <DropMenuElementLink text={"Custom"} icon={"bi bi-file-plus-fill"} link={"create"} />
-                    <DropMenuElement text={"From link"} icon={"bi bi-box-arrow-down"} />
+                    <DropMenuElementLink text={"From link"} icon={"bi bi-box-arrow-down"} link={"link_create"} />
                     <DropMenuElement text={"From tournament"} icon={"bi bi-bag-plus"} />
                   </DropMenu>
                 </li>
@@ -43,8 +43,8 @@ const Header = ({profile, profile_pic}) => {
         <div className="right-control-panel">
             <span className='username-tag'>Hello {profile}!</span>
             <div className="drop-menu-wrapper">
-            <div className="profile-picture-wrapper"><img src={profile_pic} alt="" onClick = {toggle} onBlur={toggle}/></div>
-            <DropMenu isActive={profileMenu} xtranslate={-60} ytranslate={80}>
+            <div className="profile-picture-wrapper"><img src={profile_pic} alt="" onClick = {toggle}/></div>
+            <DropMenu isActive={profileMenu} toggle={toggle} xtranslate={-60} ytranslate={80}>
               <DropMenuHeader>
                 <div className="profile-menu-profile">
                   <div className="mini-profile-picture-wrapper"><img src={profile_pic} alt=""/></div>

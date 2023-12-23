@@ -14,45 +14,31 @@ from .serializers import (
 )
 
 
-class CommentViewSet(viewsets.ModelViewSet):
-    queryset = Comment.objects.all()
+class UserCommentViewSet(viewsets.ModelViewSet):
     serializer_class = CommentsSerializer
-    filter_backends = [DjangoFilterBackend]
-    filterset_fields = [
-        "directory",
-    ]
 
     def get_queryset(self):
-        queryset = super().get_queryset()
-        if self.action == "my_comments":
-            queryset = queryset.filter(author=self.request.user.profile)
-        return queryset
+        return Comment.objects.filter(author=self.request.user.profile)
 
     def create(self, request, *args, **kwargs):
         data = request.data
-        data.update({"author": request.user.profile.id})
-        data["deal"].update({"author": request.user.profile.id})
-        comment = self.get_serializer(data=data)
-        comment.is_valid(raise_exception=True)
-        comment.save()
-        headers = self.get_success_headers(comment.data)
-        return Response(
-            {"Result": "Deal was succesfully saved!"},
-            status=status.HTTP_201_CREATED,
-            headers=headers,
-        )
+        data.update({"author": request.user.profile.username})
+        data["deal"].update({"author": request.user.profile.username})
+        return super().create(request, *args, **kwargs)
 
-    @action(detail=False, methods=["get"])
-    def my_comments(self, request, *args, **kwargs):
-        queryset = self.filter_queryset(self.get_queryset())
-
-        page = self.paginate_queryset(queryset)
-        if page is not None:
-            serializer = self.get_serializer(page, many=True)
-            return self.get_paginated_response(serializer.data)
-
-        serializer = self.get_serializer(queryset, many=True)
-        return Response(serializer.data)
+    @action(detail=False, methods=["patch"])
+    def remove_directory(self, request, *args, **kwargs):
+        to_delete = request.data.get("toDelete", None)
+        to_change = request.data.get("moveTo", None)
+        instances = self.get_queryset().filter(directory__in=to_delete)
+        for instance in instances:
+            serializer = self.get_serializer(
+                instance, data={"directory": to_change}, partial=True
+            )
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+        serializer = self.get_serializer(self.get_queryset(), many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class DealsViewSet(viewsets.ModelViewSet):
@@ -119,9 +105,12 @@ class ScrapView(APIView):
         url = request.data.get("url")
         scrapper = deal_scrapper(url)
         response = {
-            **scrapper.get_deal(),
-            **scrapper.get_dealer(),
-            **scrapper.get_vulnerability(),
+            "deal_info": {
+                **scrapper.get_deal(),
+                **scrapper.get_dealer(),
+                **scrapper.get_vulnerability(),
+            },
+            "trick_table": scrapper.get_deal_tricks(),
+            "result_table": scrapper.get_scores(),
         }
-        print(scrapper.get_deal_tricks())
         return Response(response, status=status.HTTP_200_OK)

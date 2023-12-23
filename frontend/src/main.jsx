@@ -7,13 +7,14 @@ import {
 } from "react-router-dom";
 import App, {loader as rootloader} from './App.jsx';
 import NewDeal from './pages/NewDeal.jsx'
-import AllDeals, {loader as dealsloader} from './pages/AllDeals.jsx'
+import AllDeals from './pages/AllDeals.jsx'
 import ErrorPage from './pages/Error.jsx'
 import LoginForm, {loader as loginloader} from './pages/LoginForm.jsx';
 import RegisterForm from './pages/RegisterForm.jsx';
-import MyDeals, {loader as mydealsloader} from './pages/MyDeals.jsx';
-import MyDeal, {loader as mydealloader} from './components/MyDeal.jsx';
+import MyDeals from './pages/MyDeals.jsx';
+import MyDeal, {loader as mydealloader} from './pages/MyDeal.jsx';
 import HomePage from './pages/HomePage.jsx';
+import CreateDealFromLink from './pages/CreateDealFromLink.jsx';
 
 const router = createBrowserRouter([
   {
@@ -31,14 +32,16 @@ const router = createBrowserRouter([
         element: <NewDeal/>,
       },
       {
+        path: "/link_create",
+        element: <CreateDealFromLink/>
+      },
+      {
         path: "/deals",
-        element: <AllDeals/>,
-        loader: dealsloader,
+        element: <AllDeals/>
       },
       {
         path: "/mydeals",
-        element: <MyDeals/>,
-        loader: mydealsloader,
+        element: <MyDeals/>
       },
       {
         path: "mydeals/:dealId",

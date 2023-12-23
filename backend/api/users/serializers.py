@@ -37,4 +37,10 @@ class UserSerializer(serializers.ModelSerializer):
 class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
-        fields = ["image"]
+        fields = "__all__"
+
+
+class ProfileDirectoriesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Profile
+        fields = ["directories"]

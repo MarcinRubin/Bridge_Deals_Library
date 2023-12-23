@@ -41,10 +41,14 @@ class Comment(models.Model):
     visibility = models.BooleanField(default=True)
     difficulty = models.IntegerField(blank=True, null=True)
     author = models.ForeignKey(
-        Profile, on_delete=models.CASCADE, blank=False, null=False
+        Profile,
+        on_delete=models.CASCADE,
+        blank=False,
+        null=False,
+        related_name="comments",
     )
     deal = models.ForeignKey(
         Deal, on_delete=models.CASCADE, blank=False, null=False, related_name="comments"
     )
     directory = models.CharField(max_length=100, default="other")
-    tags = models.ManyToManyField(Tag, related_name="tags", blank=True)
+    tags = models.ManyToManyField(Tag, related_name="comments", blank=True)
