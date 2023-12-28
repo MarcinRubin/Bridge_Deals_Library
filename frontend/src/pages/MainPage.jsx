@@ -1,30 +1,16 @@
-import Header from "../components/Header";
-import { Outlet} from "react-router-dom";
-import { redirect, useLoaderData } from "react-router-dom";
-import client from "../hooks/axiosClient";
+import React from 'react'
+import Header from '../components/Header'
+import { Outlet } from 'react-router-dom'
 
-export async function loader() {
-    const session = await client.get("/api/active_session");
-    if (!session.data.isAuthenticated){
-      return redirect("/login");
-    }
-    //console.log(session.data);
-    return session.data;
-};
-
-
-const MainPage = ({}) => {
-
-  const {user, profile_pic} = useLoaderData();
+const MainPage = ({profile, profile_pic}) => {
   return (
     <>
-      <Header
-        user = {user}
+    <Header
+        profile = {profile}
         profile_pic = {profile_pic}
       />
-
     <div className="main-page-container">
-      <Outlet context={user}/>
+      <Outlet context={profile}/>
     </div>
     </>
   )

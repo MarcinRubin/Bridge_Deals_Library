@@ -1,8 +1,10 @@
+import copy
+
 import requests
 
 DEALS_PLAYER = ["N", "S", "W", "E"]
 DEALS_PARAMETERS = {"vul", "player"}
-DEAL_TRICKS = ["NTrick", "STricks", "WTricks", "ETricks"]
+DEAL_TRICKS = ["NTricks", "STricks", "WTricks", "ETricks"]
 
 SUITS = ["C", "D", "H", "S", "NT"]
 CARD = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"]
@@ -21,8 +23,9 @@ class deal_scrapper:
         self.deal_scores = data["ScoringGroups"][0]["Scores"]
 
     def get_deal(self):
+        deal_data_copy = copy.deepcopy(self.deal_data)
         return {
-            player: [self.deal_data[hand].pop("Hcp"), self.deal_data[hand]][1]
+            player: [deal_data_copy[hand].pop("Hcp"), deal_data_copy[hand]][1]
             for player, hand in zip(DEALS_PLAYER, HANDS)
         }
 
@@ -41,26 +44,23 @@ class deal_scrapper:
     def get_scores(self):
         score_table = []
         for score in self.deal_scores:
-            contract_data = score["NsScore"]
-            contract = contract_data["Contract"]
-            lead = contract_data["Lead"]
-            score_table.append(
-                {
-                    "player": DEALS_PLAYER[contract["Declarer"]],
-                    "suit": SUITS[contract["Denomination"]],
-                    "double": DOUBLE[contract["Xx"]],
-                    "height": contract["Height"],
-                    "lead_suit": SUITS[lead["CardColor"]],
-                    "lead_card": CARD[lead["CardHeight"]],
-                    "score": contract_data["Score"],
-                    "overtricks": contract_data["Overtricks"],
-                }
-            )
-
+            try:
+                contract_data = score["NsScore"]
+                contract = contract_data["Contract"]
+                lead = contract_data["Lead"]
+                score_table.append(
+                    {
+                        "player": DEALS_PLAYER[contract["Declarer"]],
+                        "suit": SUITS[contract["Denomination"]],
+                        "double": DOUBLE[contract["Xx"]],
+                        "height": contract["Height"],
+                        "lead_suit": SUITS[lead["CardColor"]],
+                        "lead_card": CARD[lead["CardHeight"]],
+                        "score": contract_data["Score"],
+                        "overtricks": contract_data["Overtricks"],
+                    }
+                )
+            except KeyError:
+                # Probably just an empty row
+                continue
         return score_table
-
-
-URL = "https://www.warsbrydz.pl/wyniki/1krok/PK231127/p1.json"
-# deal = deal_scrapper(URL)
-# ans = {**deal.get_deal(), **deal.get_dealer(), **deal.get_vulnerability()}
-# print(ans)

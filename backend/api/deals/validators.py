@@ -9,7 +9,6 @@ SUITS = {"Clubs", "Diamonds", "Hearts", "Spades"}
 
 
 def validate_deal(deal_info):
-    print(deal_info)
     if DEALS_KEYS != set(deal_info.keys()):
         raise ValidationError("Deal data is incomplete")
 
@@ -57,7 +56,6 @@ def _validate_deck(**kwargs):
         for suit, batch in zip(hand_as_vector, suits.values()):
             batch.extend(list(suit))
 
-    print(suits)
     for suit, cards in suits.items():
         if set(cards) != CARDS_IN_SUIT:
             raise ValidationError(

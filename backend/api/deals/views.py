@@ -5,7 +5,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .models import Deal, Tag
+from .models import Comment, Deal, Tag
 from .serializers import (
     CommentsSerializer,
     DealsSerializer,
@@ -14,11 +14,38 @@ from .serializers import (
 )
 
 
+class UserCommentViewSet(viewsets.ModelViewSet):
+    serializer_class = CommentsSerializer
+
+    def get_queryset(self):
+        return Comment.objects.filter(author=self.request.user.profile)
+
+    def create(self, request, *args, **kwargs):
+        data = request.data
+        data.update({"author": request.user.profile.username})
+        data["deal"].update({"author": request.user.profile.username})
+        return super().create(request, *args, **kwargs)
+
+    @action(detail=False, methods=["patch"])
+    def remove_directory(self, request, *args, **kwargs):
+        to_delete = request.data.get("toDelete", None)
+        to_change = request.data.get("moveTo", None)
+        instances = self.get_queryset().filter(directory__in=to_delete)
+        for instance in instances:
+            serializer = self.get_serializer(
+                instance, data={"directory": to_change}, partial=True
+            )
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+        serializer = self.get_serializer(self.get_queryset(), many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
 class DealsViewSet(viewsets.ModelViewSet):
     filter_backends = [DjangoFilterBackend]
     queryset = Deal.objects.all()
     serializer_action_classes = {
-        "list": DealsSerializerGeneral,
+        "list": DealsSerializer,
         "retrieve": DealsSerializer,
         "create": DealsSerializer,
         "mydeals": DealsSerializerGeneral,
@@ -38,14 +65,14 @@ class DealsViewSet(viewsets.ModelViewSet):
 
     def create(self, request, *args, **kwargs):
         deal_data = request.data.get("deal")
-        comment_data = request.data.get("comment")
+        comment_data = request.data.get("comment", {})
 
         deal_data.update({"author": request.user.id})
         deal = self.get_serializer(data=deal_data)
         deal.is_valid(raise_exception=True)
         deal_obj = deal.save()
 
-        comment_data.update({"author": request.user.id, "deal": deal_obj.id})
+        comment_data.update({"author": request.user.profile.id, "deal": deal_obj.id})
         comment = CommentsSerializer(data=comment_data)
         comment.is_valid(raise_exception=True)
         comment.save()
@@ -78,8 +105,12 @@ class ScrapView(APIView):
         url = request.data.get("url")
         scrapper = deal_scrapper(url)
         response = {
-            **scrapper.get_deal(),
-            **scrapper.get_dealer(),
-            **scrapper.get_vulnerability(),
+            "deal_info": {
+                **scrapper.get_deal(),
+                **scrapper.get_dealer(),
+                **scrapper.get_vulnerability(),
+            },
+            "trick_table": scrapper.get_deal_tricks(),
+            "result_table": scrapper.get_scores(),
         }
         return Response(response, status=status.HTTP_200_OK)

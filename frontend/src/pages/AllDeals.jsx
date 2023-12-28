@@ -5,6 +5,7 @@ import { useLoaderData } from "react-router-dom";
 export async function loader() {
   try{
       const response = await client.get("/api/deals/");
+      console.log(response);
       return response.data;
   }
   catch(err){

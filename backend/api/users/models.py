@@ -72,9 +72,15 @@ class User(AbstractBaseUser):
         return self.is_admin
 
 
+def default_directories():
+    return ["other"]
+
+
 class Profile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, unique=True)
+    username = models.CharField(max_length=100)
     image = models.ImageField(default="default.jpg", upload_to="profile_pics")
+    directories = models.JSONField(default=default_directories)
 
     def __str__(self):
         return f"Profile of {self.user.email}"

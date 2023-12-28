@@ -1,5 +1,6 @@
 from django.db.models import Avg, Count
 from rest_framework import serializers
+from users.models import Profile
 
 from .models import Comment, Deal, Tag, Tournament
 
@@ -17,13 +18,17 @@ class TournamentsSerializer(serializers.ModelSerializer):
 
 
 class DealsSerializer(serializers.ModelSerializer):
+    author = serializers.SlugRelatedField(
+        slug_field="username", queryset=Profile.objects.all()
+    )
+
     class Meta:
         model = Deal
         fields = "__all__"
 
 
 class DealsSerializerGeneral(serializers.ModelSerializer):
-    author = serializers.SlugRelatedField(read_only=True, slug_field="email")
+    author = serializers.SlugRelatedField(read_only=True, slug_field="username")
     avg_difficulty = serializers.SerializerMethodField(read_only=True)
     most_popular_tags = serializers.SerializerMethodField(read_only=True)
     created_at = serializers.DateTimeField(format="%d %B %Y")
@@ -55,9 +60,19 @@ class DealsSerializerGeneral(serializers.ModelSerializer):
 
 class CommentsSerializer(serializers.ModelSerializer):
     tags = serializers.SlugRelatedField(
-        many=True, queryset=Tag.objects.all(), slug_field="name"
+        many=True, slug_field="name", queryset=Tag.objects.all()
+    )
+    deal = DealsSerializer()
+    author = serializers.SlugRelatedField(
+        slug_field="username", queryset=Profile.objects.all()
     )
 
     class Meta:
         model = Comment
         fields = "__all__"
+
+    def create(self, validated_data):
+        deal_data = validated_data.pop("deal")
+        deal_instance = Deal.objects.create(**deal_data)
+        validated_data.update({"deal": deal_instance})
+        return super().create(validated_data)
