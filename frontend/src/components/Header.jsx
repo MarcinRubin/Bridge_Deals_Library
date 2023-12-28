@@ -32,7 +32,7 @@ const Header = ({profile, profile_pic}) => {
                   <DropMenu  isActive={dealMenu} toggle={toggleDeal} xtranslate={0} ytranslate={80}>
                     <DropMenuElementLink text={"Custom"} icon={"bi bi-file-plus-fill"} link={"create"} />
                     <DropMenuElementLink text={"From link"} icon={"bi bi-box-arrow-down"} link={"link_create"} />
-                    <DropMenuElement text={"From tournament"} icon={"bi bi-bag-plus"} />
+                    <DropMenuElementLink text={"From tournament"} icon={"bi bi-bag-plus"} link={"batch_create"}/>
                   </DropMenu>
                 </li>
                 <li><Link to={`deals`}>All Deals</Link></li>

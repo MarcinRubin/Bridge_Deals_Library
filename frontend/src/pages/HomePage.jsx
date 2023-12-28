@@ -1,26 +1,34 @@
-import React from "react";
-import DealNavigator from "../components/DealNavigator";
-import LoadingElement from "../components/LoadingElement";
-import { useState, useRef, useEffect } from "react";
-import DeleteDirectoryModal from "../components/DeleteDirectoryModal";
+import useFetch from "../hooks/useFetch";
+import { useState, useEffect } from "react";
+import { CSSTransition } from "react-transition-group";
+import { useRef } from "react";
 import useToggle from "../hooks/useToggle";
 import useOutsideClick from "../hooks/useOutsideClick";
 
 const HomePage = () => {
-
-  const handleClickOutside = () => {
-    setCounter(0);
-  }
-
-  //const meineRef = useOutsideClick(handleClickOutside);
-  const [counter, setCounter] = useState(0);
+  const [nodeRef, controllerRef, isActive, toggle] = useOutsideClick();
 
   return (
     <div>
-      <button onClick={() => setCounter(counter + 1)} >
-        Add
+      <button ref={controllerRef} onClick={toggle}>
+        Click me
       </button>
-      <div>{counter}</div>
+      <CSSTransition
+        nodeRef={nodeRef}
+        in={isActive}
+        timeout={400}
+        classNames="drop-menu"
+        unmountOnExit
+      >
+        <nav className="drop-menu" style={{ top: "200px" }} ref={nodeRef}>
+          <li>
+            <span>Opcja 1</span>
+          </li>
+          <li>
+            <span>Opcja 1</span>
+          </li>
+        </nav>
+    </CSSTransition>
     </div>
   );
 };

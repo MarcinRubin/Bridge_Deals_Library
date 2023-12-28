@@ -1,200 +1,166 @@
-import React, { useEffect } from "react";
-import { useState, useRef } from "react";
-import client from "../hooks/axiosClient";
+import { useState, useRef, useEffect } from "react";
 import useToggle from "../hooks/useToggle";
 import DeleteDirectoryModal from "./DeleteDirectoryModal";
+import {setFilterDownTheTree, findNode, findParentNode} from "../utils/DealNavigator";
 
 const DealNavigator = ({
   directories,
-  setDirectories,
   filter,
   setFilter,
-  setDeals,
+  allDirectories,
+  setAllDirectories,
+  addDirectoryToTree,
+  deleteDirectoryFromTree
 }) => {
-  const [edit, setEdit] = useState(false);
-  const [name, setName] = useState("newDirectory");
-  const [isDelete, toggleDelete] = useToggle(false);
-  const [chosenDirectory, setChosenDirectory] = useState("0");
-  const Ref = useRef(null);
 
-  useEffect(() => {
-    let newFilter = [];
-    newFilter = setFilterDownTheDirectoryTree(directories[0], newFilter);
-  }, [directories]);
+  const [chosenDirectory, setChosenDirectory] = useState(directories[0]);
+  const [stopPropagation, setStopPropagation] = useState(["0"]);
+
+  //This can be transform in the single useReducer for clarity
+  const [edit, setEdit] = useState(false);
+  const [name, setName] = useState("New Folder");
+  const [temporaryNode, setTemporaryNode] = useState(null);
+  const Ref = useRef(null);
+  ////////////////////////////////////////////////////////////
+
+
+  const [isDelete, toggleDelete] = useToggle(false);
 
   useEffect(() => {
     Ref.current?.focus();
   }, [edit]);
 
-  const findNode = (key, directoryStructure) => {
-    const path = key.split("-");
-    let node = directoryStructure[parseInt(path[0])];
-    for (let edge of path.slice(1)) {
-      node = node.children[parseInt(edge)];
-    }
-    return node;
-  };
-
-  const findNodeParent = (key, directoryStructure) => {
-    const path = key.split("-");
-    path.pop();
-    const node = findNode(path.join("-"), directoryStructure);
-    return [node.value, node.key];
-  };
+   useEffect(() => {
+     let newFilter = [];
+     newFilter = setFilterDownTheTree(chosenDirectory, newFilter);
+     setFilter(newFilter);
+     let newAllDirectories = []
+     newAllDirectories = setFilterDownTheTree(directories[0], newAllDirectories);
+     setAllDirectories(newAllDirectories);
+   }, [directories]);
 
   const handleSelect = (key) => {
     const node = findNode(key, directories);
-    setChosenDirectory(node.key);
-    let newFilter = [];
-    newFilter = setFilterDownTheDirectoryTree(node, newFilter);
+    setChosenDirectory(node);
+    let newFilter = setFilterDownTheTree(node, []);
+    console.log(newFilter);
     setFilter(newFilter);
   };
 
-  const setFilterDownTheDirectoryTree = (node, newFilter) => {
-    newFilter = [...newFilter, node.value];
-    for (let children of node.children) {
-      newFilter = setFilterDownTheDirectoryTree(children, newFilter);
+  const handleExpand = (node) => {
+    let propagation = [...stopPropagation];
+    if (propagation.includes(node.key)){
+      propagation = propagation.filter(item => item !== node.key);
+      propagation = [...propagation, ...node.children.map(item => item.key)];
     }
-    return newFilter;
-  };
-
-  const handleExpand = (key) => {
-    const newDirectories = [...directories];
-    const node = findNode(key, newDirectories);
-    node.visibility = !node.visibility;
-    for (let children of node.children) {
-      setVisibilityDownTheDirectoryTree(children);
+    else{
+      propagation = propagation.filter(item => item.slice(0, node.key.length) !== node.key);
+      propagation = [...propagation, node.key];
     }
-    setDirectories(newDirectories);
-  };
-
-  const setVisibilityDownTheDirectoryTree = (children) => {
-    children.visibility = false;
-    for (let subchildren of children.children) {
-      setVisibilityDownTheDirectoryTree(subchildren);
-    }
-  };
+    setStopPropagation(propagation);
+    setChosenDirectory(node);
+    handleSelect(node.key);
+  }
 
   const handleAddDirectory = () => {
-    const newDirectories = [...directories];
-    const node = findNode(chosenDirectory, newDirectories);
-    node.visibility = true;
-
-    let newKey = null;
-    if (node.children.length) {
-      newKey = node.children[node.children.length - 1].key.split("-");
-      newKey[newKey.length - 1] = String(
-        parseInt(newKey[newKey.length - 1]) + 1
-      );
-    } else newKey = [...node.key.split("-"), "0"];
-    const newNode = {
+    const childrenNumber = chosenDirectory.children.length
+    let newKey = "";
+    if (childrenNumber) {
+      newKey = chosenDirectory.children[childrenNumber - 1].key.split("-");
+      newKey[newKey.length - 1] = String(childrenNumber);
+    } else newKey = [...chosenDirectory.key.split("-"), "0"];
+    const newTemporaryNode = {
+      parentKey: chosenDirectory.key,
       key: newKey.join("-"),
-      value: "new_node",
-      visibility: node.visibility,
+      value: "New Folder",
+      visibility: true,
       children: [],
-      temp: true,
     };
-    node.children = [...node.children, newNode];
-    setDirectories(newDirectories);
+    setTemporaryNode(newTemporaryNode);
     setEdit(true);
   };
 
-  const handleEnter = (e, key) => {
+  const handleEnter = (e) => {
     if (e.key === "Enter") {
-      handleBlur(key);
+      handleBlur();
     }
   };
 
-  const handleBlur = async (key) => {
+  const handleBlur = async () => {
     const newDirectories = [...directories];
-    const node = findNode(key, newDirectories);
-    delete node.temp;
-    node.value = name;
+    const newTemporaryNode = {...temporaryNode};
+    const parentNode = findNode(temporaryNode.parentKey, newDirectories);
 
-    try {
-      const response = await client.patch("/api/directories/", {
-        directories: newDirectories,
-      });
-    } catch (err) {
-      console.log(err.message);
-    }
+    delete newTemporaryNode.parentKey;
+    temporaryNode.value = name;
 
-    setDirectories(newDirectories);
+    parentNode.children = [...parentNode.children, temporaryNode];
+    await addDirectoryToTree(newDirectories);
+    // setChosenDirectory(newTemporaryNode);
+    setName("New Folder");
     setEdit(false);
-    setName("newDirectory");
   };
 
   const handleDelete = async () => {
-    const moveTo = findNodeParent(chosenDirectory, directories);
-    try {
-      const response = await client.patch(
-        "/api/my_comments/remove_directory/",
-        {
-          toDelete: filter,
-          moveTo: moveTo[0],
-        }
-      );
-      setDeals(response.data);
-    } catch (err) {
-      console.log(err.message);
-    }
     const newDirectories = [...directories];
-    const node = findNode(moveTo[1], newDirectories);
-    node.children = node.children.filter((item) => item.value !== filter[0]);
-    node.children = node.children.map((item, idx) => ({
-      ...item,
-      key: moveTo[1] + "-" + String(idx),
-    }));
-
-    try {
-      const response = await client.patch("/api/directories/", {
-        directories: newDirectories,
-      });
-    } catch (err) {
-      console.log(err.message);
-    }
-    setDirectories(newDirectories);
-    handleSelect(moveTo[1]);
+    const parentNode = findParentNode(chosenDirectory, newDirectories);
+    parentNode.children = parentNode.children.filter(item => item.key !== chosenDirectory.key)
+    handleSelect(parentNode.key);
     toggleDelete();
+    deleteDirectoryFromTree(filter, parentNode.value, newDirectories);
   };
 
   const handleDirectories = (item, depth) => {
     return (
       <div key={item.key}>
         <span style={{ marginLeft: `${2 * depth}rem` }}>
-          {item.children.length !== 0 && (
+          {item.children.length !== 0 ? (
             <i
               className={`bi bi-caret-${
-                item.visibility ? "down" : "right"
+                stopPropagation.includes(item.key) ? "right" : "down"
               }-fill`}
-              onClick={() => handleExpand(item.key)}
+              onClick={() => handleExpand(item)}
             ></i>
-          )}
-          {edit && item?.temp ? (
-            <input
-              ref={Ref}
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              onKeyDown={(e) => handleEnter(e, item.key)}
-              onBlur={() => handleBlur(item.key)}
-            />
-          ) : (
+          ) : null}
+
+          {
             <span
-              onClick={(e) => handleSelect(item.key)}
-              className={chosenDirectory === item.key ? "active" : ""}
+              onClick={() => handleSelect(item.key)}
+              className={chosenDirectory.key === item.key ? "active" : ""}
             >
               {item.value}
             </span>
-          )}
+          }
         </span>
-        {item.children.length !== 0 && item.visibility
+
+        {item.children.length !== 0 && !stopPropagation.includes(item.key)
           ? item.children.map((subitem) =>
               handleDirectories(subitem, depth + 1)
             )
           : null}
+
+        {
+          edit && item.key === temporaryNode.parentKey ? handleTemporary(temporaryNode, depth + 1) : null
+        }
       </div>
     );
   };
+
+  const handleTemporary = (node, depth) =>{
+    return (
+      <div key={node.key}>
+        <span style={{ marginLeft: `${2 * depth}rem` }}>
+        <input
+              ref={Ref}
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              onKeyDown={handleEnter}
+              onBlur={handleBlur}
+            />
+        </span>
+        </div>
+    )
+  }
 
   return (
     <div className="deal-navigator-wrapper">
@@ -206,7 +172,7 @@ const DealNavigator = ({
                 <span key={idx}>{item}</span>
               ))}
               <div>
-                Every deal will be automatically moved to directory: {findNodeParent(chosenDirectory, directories)[0]}
+                Every deal will be automatically moved to directory: {findParentNode(chosenDirectory, directories).value}
               </div>
             </div>
         </DeleteDirectoryModal>
@@ -214,13 +180,13 @@ const DealNavigator = ({
       <div>
         <button
           onClick={handleAddDirectory}
-          disabled={!chosenDirectory ? true : false}
+          disabled={!chosenDirectory.key ? true : false}
         >
           Add
         </button>
         <button
           onClick={toggleDelete}
-          disabled={chosenDirectory === "0" ? true : false}
+          disabled={chosenDirectory.key === "0" ? true : false}
         >
           Remove
         </button>

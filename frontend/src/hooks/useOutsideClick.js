@@ -1,16 +1,19 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
-const useOutsideClick = (callback) => {
+const useOutsideClick = () => {
     const ref = useRef();
+    const controllerRef= useRef();
+    const [isActive, setIsActive] = useState(false);
+
+    const toggle = () =>{
+      setIsActive(!isActive);
+    }
 
     useEffect(() => {
 
       const handleClick = (event) => {
-        console.log(ref.current);
-        console.log(event)
-        if (ref.current && !ref.current.contains(event.target)) {
-            console.log(callback);
-          callback();
+        if (ref.current && !ref.current.contains(event.target) && !controllerRef.current.contains(event.target)) {
+          setIsActive(false);
         }
       };
 
@@ -21,7 +24,7 @@ const useOutsideClick = (callback) => {
       };
     }, [ref]);
 
-    return ref;
+    return [ref, controllerRef, isActive, toggle];
   };
 
   export default useOutsideClick

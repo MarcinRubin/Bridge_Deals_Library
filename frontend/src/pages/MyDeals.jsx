@@ -1,89 +1,97 @@
 import MyDealListElement from "../components/MyDealListElement";
-import client from "../hooks/axiosClient";
 import DealNavigator from "../components/DealNavigator";
+import client from "../hooks/axiosClient";
 import { useState, useEffect } from "react";
 import LoadingElement from "../components/LoadingElement";
+import { setFilterDownTheTree } from "../utils/DealNavigator";
+import useDualFetch from "../hooks/useDualFetch";
 
 const MyDeals = () => {
-
-  const [directories, setDirectories] = useState([{ key: "0", value: "", visibility: true, children: []}]);
   const [allDirectories, setAllDirectories] = useState([]);
-  const [filter, setFilter] = useState([]);
-  const [deals, setDeals] = useState([]);
+  const [filter, setFilter] = useState([{ key: 0, value: 0 }]);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      console.log("Fetch");
-      let [dirData, dealData] = [null, null];
-      try {
-        dirData = await client.get("/api/directories/");
-        dealData = await client.get("/api/my_comments/");
-      } catch (err) {
-        console.log(err.message);
-      }
-      setDirectories(dirData.data.directories);
-      setDeals(dealData.data);
-      let newAllDirectories = [];
-      newAllDirectories = setFilterDownTheTree(dirData.data.directories[0], newAllDirectories);
-      setAllDirectories(newAllDirectories);
-      setFilter(newAllDirectories);
-    };
+  const [deals, setDeals, directories, setDirectories, error, loading] =
+    useDualFetch("/api/my_comments", "/api/directories/");
 
-    fetchData();
-  }, []);
-
-  useEffect(() => {
-    let newAllDirectories = [];
-    newAllDirectories = setFilterDownTheTree(directories[0], newAllDirectories);
-    setAllDirectories(newAllDirectories);
-  }, [directories])
-
-  const setFilterDownTheTree = (node, newAllDirectories) => {
-    newAllDirectories = [...newAllDirectories, node.value];
-    for (let children of node.children) {
-      newAllDirectories = setFilterDownTheTree(children, newAllDirectories);
-    }
-    return newAllDirectories;
-  };
-
-  const handleChangeDealsList = (id, newDirectory) =>{
+    const handleChangeDealDirectory = (id, newDirectory) => {
     const newDeals = [...deals];
-    const deal = newDeals.filter(item => item.id === id)[0]
+    const deal = newDeals.filter((item) => item.id === id)[0];
     deal.directory = newDirectory;
     setDeals(newDeals);
-  }
+  };
 
-  const handleRemoveFromDealList = (id) => {
+  const handleRemoveDeal = (id) => {
     let newDeals = [...deals];
-    newDeals = newDeals.filter(item => item.id !== id);
+    newDeals = newDeals.filter((item) => item.id !== id);
     setDeals(newDeals);
-  }
+  };
+
+  const addDirectoryToTree = async (newDirectories) => {
+    try {
+      const response = await client.patch("/api/directories/", {
+        directories: newDirectories,
+      });
+      setDirectories(response.data.directories);
+    } catch (err) {
+      console.log(err.message);
+    }
+  };
+
+  const deleteDirectoryFromTree = async (toMove, moveTo, newDirectoryTree) => {
+    try {
+      const newDeals = await client.patch(
+        "/api/my_comments/remove_directory/",
+        {
+          toDelete: toMove,
+          moveTo: moveTo,
+        }
+      );
+      const newDirectories = await client.patch("/api/directories/", {
+        directories: newDirectoryTree,
+      });
+      setDirectories(newDirectories.data.directories);
+      setDeals(newDeals.data);
+    } catch (err) {
+      console.log(err.message);
+    }
+  };
 
   return (
-    <div className="all-deals-wrapper">
+    <>
+      {loading ? (
+        <div className="loader"></div>
+      ) : (
+        <div className="all-deals-wrapper">
+          <DealNavigator
+            directories={directories}
+            filter={filter}
+            setFilter={setFilter}
+            allDirectories={allDirectories}
+            setAllDirectories={setAllDirectories}
+            addDirectoryToTree={addDirectoryToTree}
+            deleteDirectoryFromTree={deleteDirectoryFromTree}
+          />
+          <div className="all-deals-container">
+            {deals.length === 0 ? (
+              <LoadingElement spinnerWidth={50} thickness={5} />
+            ) : null}
+            {Object.keys(deals).length !== 0 &&
+              deals
+                .filter((item) => filter.includes(item.directory))
+                .map((item) => (
+                  <MyDealListElement
+                    myDeal={item}
+                    key={item.id}
+                    allDirectories={allDirectories}
+                    handleChangeDealsList={handleChangeDealDirectory}
+                    handleRemoveFromDealList={handleRemoveDeal}
+                  />
+                ))}
+          </div>
+        </div>
+      )}
+    </>
+  );
+};
 
-    <DealNavigator
-      directories = {directories}
-      setDirectories = {setDirectories}
-      filter={filter}
-      setFilter={setFilter}
-      setDeals = {setDeals}
-    />
-    <div className="all-deals-container">
-    {deals.length === 0 ? <LoadingElement spinnerWidth={50} thickness={5}/> : null}
-    {Object.keys(deals).length !== 0 && deals.filter(item => filter.includes(item.directory)).map( (item) => (
-      <MyDealListElement
-        myDeal = {item}
-        key = {item.id}
-        allDirectories = {allDirectories}
-        handleChangeDealsList={handleChangeDealsList}
-        handleRemoveFromDealList={handleRemoveFromDealList}
-      />
-    ))
-    }
-  </div>
-  </div>
-  )
-}
-
-export default MyDeals
+export default MyDeals;

@@ -946,3 +946,27 @@ margin-top: 0.5rem;
   align-items: center;
   z-index:100;
 }
+
+
+
+.test-wrapper{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  width: 200px;
+}
+
+.test{
+  position: relative;
+  display: flex;
+  width: 100px;
+  height: 100px;
+  background-color: red;
+}
+
+.test2{
+  position:absolute;
+  left: 100px;
+  background-color: blue;
+}

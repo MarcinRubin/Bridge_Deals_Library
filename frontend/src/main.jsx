@@ -15,6 +15,7 @@ import MyDeals from './pages/MyDeals.jsx';
 import MyDeal, {loader as mydealloader} from './pages/MyDeal.jsx';
 import HomePage from './pages/HomePage.jsx';
 import CreateDealFromLink from './pages/CreateDealFromLink.jsx';
+import CreateDealSetFromLink from './pages/CreateDealSetFromLink.jsx';
 
 const router = createBrowserRouter([
   {
@@ -42,6 +43,10 @@ const router = createBrowserRouter([
       {
         path: "/mydeals",
         element: <MyDeals/>
+      },
+      {
+        path: "batch_create",
+        element: <CreateDealSetFromLink/>
       },
       {
         path: "mydeals/:dealId",

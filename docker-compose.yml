@@ -32,6 +32,20 @@ services:
       - backend
       - frontend
 
+  worker:
+    restart: unless-stopped
+    build: ./backend/api
+    volumes:
+      - ./backend/api/:/api
+    depends_on:
+      - backend
+      - redis
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - 6379:6379
+
   db:
     image: postgres:15
     container_name: bridge-db
