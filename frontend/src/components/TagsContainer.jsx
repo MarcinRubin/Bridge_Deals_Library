@@ -1,10 +1,12 @@
+import { HStack, Text } from "@chakra-ui/react"
+
 const TagsContainer = ({tags}) => {
   return (
-    <div className="tags-container">
+   <HStack>
     {tags.map((item, idx) => (
         <span key={idx}>{item}</span>
     ))}
-    </div>
+    </HStack>
   )
 }
 

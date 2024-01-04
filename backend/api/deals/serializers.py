@@ -21,6 +21,7 @@ class DealsSerializer(serializers.ModelSerializer):
     author = serializers.SlugRelatedField(
         slug_field="username", queryset=Profile.objects.all()
     )
+    tournament = serializers.SlugRelatedField(slug_field="name", read_only=True)
 
     class Meta:
         model = Deal

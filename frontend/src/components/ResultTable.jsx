@@ -1,218 +1,16 @@
-import React from "react";
+import {
+  Table,
+  Thead,
+  Tbody,
+  Tr,
+  Th,
+  Td,
+  TableContainer,
+  VStack,
+  Heading
+} from "@chakra-ui/react";
 
 const ResultTable = ({result_table}) => {
-  // const result_table = [
-  //   {
-  //     player: "N",
-  //     suit: "H",
-  //     double: "X",
-  //     height: 6,
-  //     lead_suit: "S",
-  //     lead_card: "7",
-  //     score: 1210,
-  //     overtricks: 0,
-  //   },
-  //   {
-  //     player: "N",
-  //     suit: "H",
-  //     double: "",
-  //     height: 6,
-  //     lead_suit: "H",
-  //     lead_card: "4",
-  //     score: 980,
-  //     overtricks: 0,
-  //   },
-  //   {
-  //     player: "N",
-  //     suit: "H",
-  //     double: "",
-  //     height: 4,
-  //     lead_suit: "S",
-  //     lead_card: "5",
-  //     score: 480,
-  //     overtricks: 2,
-  //   },
-  //   {
-  //     player: "N",
-  //     suit: "H",
-  //     double: "",
-  //     height: 4,
-  //     lead_suit: "S",
-  //     lead_card: "7",
-  //     score: 480,
-  //     overtricks: 2,
-  //   },
-  //   {
-  //     player: "N",
-  //     suit: "H",
-  //     double: "",
-  //     height: 5,
-  //     lead_suit: "S",
-  //     lead_card: "5",
-  //     score: 480,
-  //     overtricks: 1,
-  //   },
-  //   {
-  //     player: "S",
-  //     suit: "H",
-  //     double: "",
-  //     height: 5,
-  //     lead_suit: "S",
-  //     lead_card: "5",
-  //     score: 480,
-  //     overtricks: 1,
-  //   },
-  //   {
-  //     player: "N",
-  //     suit: "H",
-  //     double: "",
-  //     height: 4,
-  //     lead_suit: "S",
-  //     lead_card: "7",
-  //     score: 480,
-  //     overtricks: 2,
-  //   },
-  //   {
-  //     player: "N",
-  //     suit: "H",
-  //     double: "",
-  //     height: 5,
-  //     lead_suit: "S",
-  //     lead_card: "7",
-  //     score: 480,
-  //     overtricks: 1,
-  //   },
-  //   {
-  //     player: "N",
-  //     suit: "H",
-  //     double: "",
-  //     height: 5,
-  //     lead_suit: "S",
-  //     lead_card: "5",
-  //     score: 480,
-  //     overtricks: 1,
-  //   },
-  //   {
-  //     player: "N",
-  //     suit: "H",
-  //     double: "",
-  //     height: 4,
-  //     lead_suit: "D",
-  //     lead_card: "Q",
-  //     score: 480,
-  //     overtricks: 2,
-  //   },
-  //   {
-  //     player: "N",
-  //     suit: "H",
-  //     double: "",
-  //     height: 5,
-  //     lead_suit: "S",
-  //     lead_card: "7",
-  //     score: 480,
-  //     overtricks: 1,
-  //   },
-  //   {
-  //     player: "N",
-  //     suit: "H",
-  //     double: "",
-  //     height: 5,
-  //     lead_suit: "S",
-  //     lead_card: "5",
-  //     score: 480,
-  //     overtricks: 1,
-  //   },
-  //   {
-  //     player: "N",
-  //     suit: "H",
-  //     double: "",
-  //     height: 4,
-  //     lead_suit: "S",
-  //     lead_card: "7",
-  //     score: 480,
-  //     overtricks: 2,
-  //   },
-  //   {
-  //     player: "N",
-  //     suit: "H",
-  //     double: "",
-  //     height: 4,
-  //     lead_suit: "D",
-  //     lead_card: "Q",
-  //     score: 480,
-  //     overtricks: 2,
-  //   },
-  //   {
-  //     player: "N",
-  //     suit: "H",
-  //     double: "",
-  //     height: 4,
-  //     lead_suit: "S",
-  //     lead_card: "7",
-  //     score: 450,
-  //     overtricks: 1,
-  //   },
-  //   {
-  //     player: "N",
-  //     suit: "H",
-  //     double: "",
-  //     height: 4,
-  //     lead_suit: "D",
-  //     lead_card: "Q",
-  //     score: 450,
-  //     overtricks: 1,
-  //   },
-  //   {
-  //     player: "N",
-  //     suit: "H",
-  //     double: "",
-  //     height: 4,
-  //     lead_suit: "D",
-  //     lead_card: "Q",
-  //     score: 450,
-  //     overtricks: 1,
-  //   },
-  //   {
-  //     player: "W",
-  //     suit: "S",
-  //     double: "X",
-  //     height: 4,
-  //     lead_suit: "H",
-  //     lead_card: "A",
-  //     score: 100,
-  //     overtricks: -1,
-  //   },
-  //   {
-  //     player: "N",
-  //     suit: "H",
-  //     double: "",
-  //     height: 6,
-  //     lead_suit: "D",
-  //     lead_card: "J",
-  //     score: -50,
-  //     overtricks: -1,
-  //   },
-  //   {
-  //     player: "N",
-  //     suit: "H",
-  //     double: "",
-  //     height: 6,
-  //     lead_suit: "S",
-  //     lead_card: "5",
-  //     score: -50,
-  //     overtricks: -1,
-  //   },
-  //   {
-  //     player: "N",
-  //     suit: "H",
-  //     double: "",
-  //     height: 6,
-  //     lead_suit: "D",
-  //     lead_card: "Q",
-  //     score: -50,
-  //     overtricks: -1,
-  //   },
-  // ];
 
   const suits_map = {
     H: "heart",
@@ -223,35 +21,38 @@ const ResultTable = ({result_table}) => {
   };
 
   return (
-    <div className="table-container">
-      <table>
-        <thead>
-          <tr>
-            <th>Contract</th>
-            <th>Player</th>
-            <th>Lead</th>
-            <th>Result</th>
-          </tr>
-        </thead>
-        <tbody>
+    <VStack>
+      <Heading size="md">Result Table</Heading>
+    <TableContainer bg="green.900">
+      <Table variant='striped' colorScheme='green'>
+        <Thead>
+          <Tr>
+            <Th>Contract</Th>
+            <Th>Player</Th>
+            <Th>Lead</Th>
+            <Th>Result</Th>
+          </Tr>
+        </Thead>
+        <Tbody>
           {result_table.map((row, idx) => (
-            <tr key={idx}>
-              <td>
+            <Tr key={idx}>
+              <Td>
                 {row.height}
                 <i className={`bi bi-suit-${suits_map[row.suit]}-fill`} />
                 {row.double}{" "}
-              </td>
-              <td>{row.player}</td>
-              <td>
+              </Td>
+              <Td>{row.player}</Td>
+              <Td>
                 <i className={`bi bi-suit-${suits_map[row.lead_suit]}-fill`} />
                 {row.lead_card}
-              </td>
-              <td>{row.overtricks === 0 ? "=" : (row.overtricks > 0) ? ("+" + row.overtricks) : (row.overtricks) }</td>
-            </tr>
+              </Td>
+              <Td>{row.overtricks === 0 ? "=" : (row.overtricks > 0) ? ("+" + row.overtricks) : (row.overtricks) }</Td>
+            </Tr>
           ))}
-        </tbody>
-      </table>
-    </div>
+        </Tbody>
+      </Table>
+      </TableContainer>
+      </VStack>
   );
 };
 

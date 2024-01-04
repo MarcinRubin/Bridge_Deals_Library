@@ -37,6 +37,7 @@ services:
     build: ./backend/api
     volumes:
       - ./backend/api/:/api
+    env_file: ./backend/api/.env
     depends_on:
       - backend
       - redis

@@ -1,49 +1,64 @@
-const TrickTable = ({trick_table}) => {
+import {
+  Table,
+  Thead,
+  Tbody,
+  Tr,
+  Th,
+  Td,
+  TableContainer,
+  Heading,
+  VStack} from "@chakra-ui/react";
 
+const TrickTable = ({trick_table}) => {
 
   const suits_map = ["non-trump", "spade", "heart", "diamond", "club"];
 
   const suit_order = ["Nt", "Spades", "Hearts", "Diamonds", "Clubs"];
 
   return (
-      <table className="trick-table">
-        <thead>
-          <tr>
-            <th></th>
+    <VStack>
+    <Heading size="md">Trick Table</Heading>
+    <TableContainer bg="green.900">
+      <Table variant="striped" colorScheme="green">
+        <Thead>
+          <Tr>
+            <Th></Th>
             {suits_map.map((suit, idx) => (
-              <th key={idx}>
+              <Th key={idx}>
                 <i className={`bi bi-suit-${suit}-fill`} />
-              </th>
+              </Th>
             ))}
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>N</td>
+          </Tr>
+        </Thead>
+        <Tbody>
+          <Tr>
+            <Td>N</Td>
             {suit_order.map((item, idx) => (
-                <td key={idx}>{trick_table.NTricks[item]}</td>
+                <Td key={idx}>{trick_table.NTricks[item]}</Td>
             ))}
-        </tr>
-        <tr>
-            <td>S</td>
+        </Tr>
+        <Tr>
+            <Td>S</Td>
             {suit_order.map((item, idx) => (
-                <td key={idx}>{trick_table.STricks[item]}</td>
+                <Td key={idx}>{trick_table.STricks[item]}</Td>
             ))}
-        </tr>
-        <tr>
-            <td>W</td>
+        </Tr>
+        <Tr>
+            <Td>W</Td>
             {suit_order.map((item, idx) => (
-                <td key={idx}>{trick_table.WTricks[item]}</td>
+                <Td key={idx}>{trick_table.WTricks[item]}</Td>
             ))}
-        </tr>
-        <tr>
-            <td>E</td>
+        </Tr>
+        <Tr>
+            <Td>E</Td>
             {suit_order.map((item, idx) => (
-                <td key={idx}>{trick_table.ETricks[item]}</td>
+                <Td key={idx}>{trick_table.ETricks[item]}</Td>
             ))}
-          </tr>
-        </tbody>
-      </table>
+          </Tr>
+        </Tbody>
+      </Table>
+      </TableContainer>
+      </VStack>
   );
 };
 

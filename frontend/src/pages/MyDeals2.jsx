@@ -5,16 +5,15 @@ import { useState, useEffect } from "react";
 import LoadingElement from "../components/LoadingElement";
 import { setFilterDownTheTree } from "../utils/DealNavigator";
 import useDualFetch from "../hooks/useDualFetch";
-import { Spinner, Container, Flex } from "@chakra-ui/react";
 
-const MyDeals = () => {
+const MyDeals2 = () => {
   const [allDirectories, setAllDirectories] = useState([]);
   const [filter, setFilter] = useState([{ key: 0, value: 0 }]);
 
   const [deals, setDeals, directories, setDirectories, error, loading] =
     useDualFetch("/api/my_comments", "/api/directories/");
 
-  const handleChangeDealDirectory = (id, newDirectory) => {
+    const handleChangeDealDirectory = (id, newDirectory) => {
     const newDeals = [...deals];
     const deal = newDeals.filter((item) => item.id === id)[0];
     deal.directory = newDirectory;
@@ -59,25 +58,22 @@ const MyDeals = () => {
 
   return (
     <>
-     <Container maxW="1400px" display="flex" flexDirection="row" mt={8} gap={4} minH="100vh">
       {loading ? (
-        <Spinner color="green.500" size="xl"/>
+        <div className="loader"></div>
       ) : (
-        <>
-          <Flex minW="200px">
-            <DealNavigator
-              directories={directories}
-              filter={filter}
-              setFilter={setFilter}
-              allDirectories={allDirectories}
-              setAllDirectories={setAllDirectories}
-              addDirectoryToTree={addDirectoryToTree}
-              deleteDirectoryFromTree={deleteDirectoryFromTree}
-            />
-          </Flex>
-          <Flex wrap="wrap" gap={8} alignItems="flex-start">
+        <div className="all-deals-wrapper">
+          <DealNavigator
+            directories={directories}
+            filter={filter}
+            setFilter={setFilter}
+            allDirectories={allDirectories}
+            setAllDirectories={setAllDirectories}
+            addDirectoryToTree={addDirectoryToTree}
+            deleteDirectoryFromTree={deleteDirectoryFromTree}
+          />
+          <div className="all-deals-container">
             {deals.length === 0 ? (
-              <Spinner/>
+              <LoadingElement spinnerWidth={50} thickness={5} />
             ) : null}
             {Object.keys(deals).length !== 0 &&
               deals
@@ -91,13 +87,11 @@ const MyDeals = () => {
                     handleRemoveFromDealList={handleRemoveDeal}
                   />
                 ))}
-          </Flex>
-          </>
-
+          </div>
+        </div>
       )}
-      </Container>
     </>
   );
 };
 
-export default MyDeals;
+export default MyDeals2;

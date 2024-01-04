@@ -1,16 +1,15 @@
-from deals_scrapper.deal_scrapper import deal_scrapper
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import generics, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from rest_framework.views import APIView
 
-from .models import Comment, Deal, Tag
+from .models import Comment, Deal, Tag, Tournament
 from .serializers import (
     CommentsSerializer,
     DealsSerializer,
     DealsSerializerGeneral,
     TagsSerializer,
+    TournamentsSerializer,
 )
 
 
@@ -67,7 +66,7 @@ class DealsViewSet(viewsets.ModelViewSet):
         deal_data = request.data.get("deal")
         comment_data = request.data.get("comment", {})
 
-        deal_data.update({"author": request.user.id})
+        deal_data.update({"author": request.user.profile.id})
         deal = self.get_serializer(data=deal_data)
         deal.is_valid(raise_exception=True)
         deal_obj = deal.save()
@@ -98,19 +97,6 @@ class TagsView(generics.ListAPIView):
     queryset = Tag.objects.all()
 
 
-class ScrapView(APIView):
-    http_method_names = ["post"]
-
-    def post(self, request):
-        url = request.data.get("url")
-        scrapper = deal_scrapper(url)
-        response = {
-            "deal_info": {
-                **scrapper.get_deal(),
-                **scrapper.get_dealer(),
-                **scrapper.get_vulnerability(),
-            },
-            "trick_table": scrapper.get_deal_tricks(),
-            "result_table": scrapper.get_scores(),
-        }
-        return Response(response, status=status.HTTP_200_OK)
+class TournamentsView(generics.ListCreateAPIView):
+    serializer_class = TournamentsSerializer
+    queryset = Tournament.objects.all()

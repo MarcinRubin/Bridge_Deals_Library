@@ -1,21 +1,46 @@
-import DealCreator from "../components/DealCreator";
-import DealCreatorInterface from "../components/DealCreatorInterface";
-import CommentEditor from "../components/CommentEditor";
-import LoadingElement from "../components/LoadingElement";
-import ResultTable from "../components/ResultTable";
-import TrickTable from "../components/TrickTable";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import client from "../hooks/axiosClient";
 import { useNavigate } from "react-router-dom";
-import TagsManager from "../components/TagsManager";
+import DealCreator from "../components/DealCreator";
+import DealCreatorInterface from "../components/DealCreatorInterface";
+import ResultTable from "../components/ResultTable";
+import TrickTable from "../components/TrickTable";
+import {
+  Container,
+  Flex,
+  Select as ChakraSelect,
+  Input,
+  Textarea,
+  VStack,
+  Button,
+  Text,
+  Spinner
+} from "@chakra-ui/react";
+import Select from "react-select";
 
-const CreateDealFromLink = () => {
+const CreateDealFromLink = ({}) => {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchTags = async () => {
+      try {
+        const response = await client.get("/api/tags/");
+        const tags = response.data.map((item) => ({
+          value: item.name,
+          label: item.name,
+        }));
+        setTags(tags);
+      } catch (err) {
+        console.log(err.message);
+      }
+    };
+
+    fetchTags();
+  }, []);
+
+  const [tags, setTags] = useState([]);
+
   const [currentTags, setCurrentTags] = useState([]);
-
-  const [isLoaded, setIsLoaded] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-
-  const [link, setLink] = useState("");
   const [deal, setDeal] = useState({
     deal_info: {
       N: {
@@ -42,32 +67,42 @@ const CreateDealFromLink = () => {
         Diamonds: "",
         Clubs: "",
       },
-      vulnerability: [true, false],
-      dealer: "N",
+      vulnerability: [false, false],
+      dealer: "",
     },
     name: "Test",
     visibility: true,
   });
 
   const [comment, setComment] = useState({
-    tags: [],
     visibility: true,
     difficulty: "1",
     body: "Comment",
   });
 
+  const [link, setLink] = useState("");
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
   const handleSaveDeal = async (e) => {
     try {
-      const newComment = { ...comment, tags: currentTags };
-      const response = await client.post("/api/comments/", {
+      const newComment = {
+        ...comment,
+        tags: currentTags.map((item) => item.value),
+      };
+      const response = await client.post("/api/my_comments/", {
         deal: deal,
         ...newComment,
       });
-      console.log(response.data);
       navigate("/mydeals");
     } catch (err) {
-      console.log("Blad");
+      console.log(err.response.data);
     }
+  };
+
+  const handleChangeTitle = (e) => {
+    const newDeal = { ...deal, name: e.target.value };
+    setDeal(newDeal);
   };
 
   const handleSubmit = async (e) => {
@@ -76,96 +111,173 @@ const CreateDealFromLink = () => {
       const response = await client.post("/api/scrap_deal/", { url: link });
       const deal_data = response.data;
       const new_deal = { ...deal, ...deal_data};
-      console.log(new_deal);
+      console.log(deal_data);
+      setDeal(new_deal);
       setIsLoading(false);
       setIsLoaded(true);
-      setDeal(new_deal);
     } catch (err) {
       console.log(err);
     }
   };
 
   return (
-    <div className="new-deal-container">
-      <div className="new-deal-container-first-row">
-        {isLoaded ? (
-          <>
-            <div className="deal-container">
-              <DealCreator deal={deal.deal_info} selectedTags={comment.tags} />
-            </div>
-            <DealCreatorInterface deal={deal} setDeal={setDeal} />
-          </>
-        ) : isLoading ? (
-            <LoadingElement
-              spinnerWidth={50}
-              thickness={0.8}
-            />
-        ) : (
-          <div className="link-loader-container">
-            <input
+    <>
+      <Container maxW="900px" mt={5}>
+        {!isLoaded ? (
+          <Flex w="100%" flexDirection="column" gap={3} alignItems="center" justifyContent="center" p={4}>
+            <Text>Paste the link to the single deal below:</Text>
+            <Input
               value={link}
               onChange={(e) => setLink(e.target.value)}
-            ></input>
-            <button onClick={handleSubmit}>Load Deal</button>
-          </div>
-        )}
-      </div>
-
-      <div className="new-deal-container-second-row">
-      {isLoaded ? (
+            ></Input>
+            <Button onClick={handleSubmit}>Load Deal</Button>
+            {isLoading ? <Spinner/> : null}
+          </Flex>
+        ) : (
           <>
+        <Flex
+          border="2px"
+          borderColor="gray.500"
+          alignItems="center"
+          borderRadius="1rem"
+          justifyContent="space-around"
+          wrap="wrap"
+          p={5}
+          gap={2}
+          mb={5}
+        >
+          <DealCreator deal={deal.deal_info} size="medium" />
+          <DealCreatorInterface deal={deal} setDeal={setDeal} />
+        </Flex>
+
+        <Flex
+          border="2px"
+          borderColor="gray.500"
+          p={5}
+          mb={5}
+          borderRadius="1rem"
+          alignItems="flex-start"
+          justifyContent="center"
+          gap={4}
+          >
+
               <ResultTable
                 result_table = {deal.result_table}
                 />
               <TrickTable
                 trick_table = {deal.trick_table}
                 />
-          </>
-        ) : isLoading ? (
-            <LoadingElement
-              spinnerWidth={50}
-              thickness={0.8}
-            />
-        ) : (
-          <span>RESULTS AND TRICK TABLE</span>
-        )}
-      </div>
+        </Flex>
 
-      <div className="new-deal-container-tag-row">
-        <span>TAGS</span>
-        <TagsManager
-          currentTags={currentTags}
-          setCurrentTags={setCurrentTags}
-        />
+        <Flex
+          border="2px"
+          borderColor="gray.500"
+          p={5}
+          mb={5}
+          borderRadius="1rem"
+        >
+          <Select
+            styles={{
+              container: (baseStyles, state) => ({
+                ...baseStyles,
+                color: "black",
+                width: "75%",
+              }),
+              control: (baseStyles, state) => ({
+                ...baseStyles,
+                backgroundColor: "#1A202C",
+                ":focus": {
+                  border: "1px white solid",
+                },
+              }),
+              option: (baseStyles, state) => ({
+                ...baseStyles,
+                color: "rgba(255, 255, 255, 0.92)",
+                backgroundColor: "#2D3748",
+                ":hover": {
+                  backgroundColor: "#718096",
+                },
+              }),
+              menu: (baseStyles, state) => ({
+                ...baseStyles,
+                color: "rgba(255, 255, 255, 0.92)",
+                backgroundColor: "#2D3748",
+                border: "2px solid white",
+              }),
+              multiValue: (baseStyles, state) => ({
+                ...baseStyles,
+                color: "rgba(255, 255, 255, 0.92)",
+                backgroundColor: "#2F855A",
+                border: "1px solid white",
+                borderRadius: "0.75rem",
+              }),
+              multiValueLabel: (baseStyles, state) => ({
+                ...baseStyles,
+                color: "rgba(255, 255, 255, 0.92)",
+                fontSize: "1.1rem",
+              }),
+              multiValueRemove: (baseStyles, state) => ({
+                ...baseStyles,
+                color: "rgba(255, 255, 255, 0.92)",
+                ":hover": {
+                  backgroundColor: "#276749",
+                },
+              }),
+            }}
+            defaultValue={currentTags}
+            onChange={setCurrentTags}
+            isMulti
+            name="colors"
+            options={tags}
+            className="basic-multi-select"
+            classNamePrefix="select"
+          />
 
-        <div className="difficulty-row">
-          <span>DIFFICULTY</span>
-          <select
+          <ChakraSelect
+            placeholder="Difficulty"
+            w="25%"
             value={comment.difficulty}
-            onChange={(e) =>
-              setComment({ ...comment, difficulty: e.target.value })
-            }
+            onChange={(e) => {
+              const newComment = { ...comment, difficulty: e.target.value };
+              setComment(newComment);
+            }}
           >
             <option value="1">1</option>
             <option value="2">2</option>
             <option value="3">3</option>
             <option value="4">4</option>
             <option value="5">5</option>
-          </select>
-        </div>
-      </div>
-      <div className="create-comment-section">
-        <CommentEditor
-          deal={deal}
-          setDeal={setDeal}
-          comment={comment}
-          setComment={setComment}
-        />
-      </div>
-      <div className="create-save-section">
-        <button onClick={handleSaveDeal} disabled={!isLoaded}>SAVE</button>
-      </div>
-    </div>
+          </ChakraSelect>
+        </Flex>
+        <VStack border="2px" borderColor="gray.500" p={5} borderRadius="1rem">
+          <Input
+            value={deal.name}
+            onChange={handleChangeTitle}
+            placeholder="Title"
+          />
+          <Textarea
+            value={comment.body}
+            onChange={(e) => {
+              const newComment = { ...comment, body: e.target.value };
+              setComment(newComment);
+            }}
+            placeholder="Your comment"
+          />
+        </VStack>
+        <Flex justifyContent="flex-end" mt={1}>
+          <Button
+            bg="green.700"
+            _hover={{
+              bg: "green.600",
+            }}
+            onClick={handleSaveDeal}
+          >
+            SAVE
+          </Button>
+        </Flex>
+        </>)}
+      </Container>
+    </>
   );
 };
 

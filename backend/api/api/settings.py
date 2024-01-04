@@ -33,6 +33,7 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     "users.apps.UsersConfig",
     "deals.apps.DealsConfig",
+    "scrapper.apps.ScrapperConfig",
     "rest_framework",
     "django_filters",
     "django.contrib.admin",
