@@ -1,3 +1,4 @@
+from django.core.validators import MaxValueValidator
 from django.db import models
 from users.models import Profile, User
 
@@ -39,7 +40,9 @@ class Comment(models.Model):
     body = models.TextField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     visibility = models.BooleanField(default=True)
-    difficulty = models.IntegerField(blank=True, null=True)
+    difficulty = models.IntegerField(
+        blank=True, null=True, validators=[MaxValueValidator(5)]
+    )
     author = models.ForeignKey(
         Profile,
         on_delete=models.CASCADE,

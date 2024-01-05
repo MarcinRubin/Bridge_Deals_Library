@@ -40,7 +40,6 @@ class ProfileSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-class ProfileDirectoriesSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Profile
+class ProfileDirectoriesSerializer(ProfileSerializer):
+    class Meta(ProfileSerializer.Meta):
         fields = ["directories"]

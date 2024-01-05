@@ -40,6 +40,17 @@ class UserCommentViewSet(viewsets.ModelViewSet):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
+class TagsView(generics.ListAPIView):
+    serializer_class = TagsSerializer
+    queryset = Tag.objects.all()
+
+
+class TournamentsView(generics.ListCreateAPIView):
+    serializer_class = TournamentsSerializer
+    queryset = Tournament.objects.all()
+
+
+# Code for the deal has to be changed!###################################################
 class DealsViewSet(viewsets.ModelViewSet):
     filter_backends = [DjangoFilterBackend]
     queryset = Deal.objects.all()
@@ -90,13 +101,3 @@ class DealsViewSet(viewsets.ModelViewSet):
 
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
-
-
-class TagsView(generics.ListAPIView):
-    serializer_class = TagsSerializer
-    queryset = Tag.objects.all()
-
-
-class TournamentsView(generics.ListCreateAPIView):
-    serializer_class = TournamentsSerializer
-    queryset = Tournament.objects.all()
