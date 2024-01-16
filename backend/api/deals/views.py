@@ -1,22 +1,22 @@
-from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import generics, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
-from .models import Comment, Deal, Tag, Tournament
-from .serializers import (
-    CommentsSerializer,
-    DealsSerializer,
-    DealsSerializerGeneral,
-    TagsSerializer,
-    TournamentsSerializer,
+from .models import Comment, Tag, Tournament
+from .reports import (
+    get_average_difficulty,
+    get_difficulty_distribution,
+    get_most_common_tags,
+    get_number_of_all_deals,
 )
+from .serializers import CommentsSerializer, TagsSerializer, TournamentsSerializer
 
 
 class UserCommentViewSet(viewsets.ModelViewSet):
     serializer_class = CommentsSerializer
 
     def get_queryset(self):
+        # add super().get_quesryset()
         return Comment.objects.filter(author=self.request.user.profile)
 
     def create(self, request, *args, **kwargs):
@@ -39,6 +39,19 @@ class UserCommentViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(self.get_queryset(), many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+    @action(detail=False, methods=["get"])
+    def get_statistics(self, request, *args, **kwargs):
+        comments = self.get_queryset()
+        return Response(
+            {
+                "average_difficulty": get_average_difficulty(comments),
+                "most_common_tags": get_most_common_tags(comments),
+                "difficulty_distribution": get_difficulty_distribution(comments),
+                "all_deals": get_number_of_all_deals(comments),
+            },
+            status=status.HTTP_200_OK,
+        )
+
 
 class TagsView(generics.ListAPIView):
     serializer_class = TagsSerializer
@@ -48,56 +61,3 @@ class TagsView(generics.ListAPIView):
 class TournamentsView(generics.ListCreateAPIView):
     serializer_class = TournamentsSerializer
     queryset = Tournament.objects.all()
-
-
-# Code for the deal has to be changed!###################################################
-class DealsViewSet(viewsets.ModelViewSet):
-    filter_backends = [DjangoFilterBackend]
-    queryset = Deal.objects.all()
-    serializer_action_classes = {
-        "list": DealsSerializer,
-        "retrieve": DealsSerializer,
-        "create": DealsSerializer,
-        "mydeals": DealsSerializerGeneral,
-    }
-
-    def get_queryset(self):
-        queryset = super().get_queryset()
-        if self.action == "mydeals":
-            queryset.filter(author=self.request.user)
-        return queryset
-
-    def get_serializer_class(self):
-        try:
-            return self.serializer_action_classes[self.action]
-        except (KeyError, AttributeError):
-            return super().get_serializer_class()
-
-    def create(self, request, *args, **kwargs):
-        deal_data = request.data.get("deal")
-        comment_data = request.data.get("comment", {})
-
-        deal_data.update({"author": request.user.profile.id})
-        deal = self.get_serializer(data=deal_data)
-        deal.is_valid(raise_exception=True)
-        deal_obj = deal.save()
-
-        comment_data.update({"author": request.user.profile.id, "deal": deal_obj.id})
-        comment = CommentsSerializer(data=comment_data)
-        comment.is_valid(raise_exception=True)
-        comment.save()
-
-        return Response("Deal was saved successfully!", status=status.HTTP_200_OK)
-
-    @action(detail=False, methods=["get"])
-    def mydeals(self, request, *args, **kwargs):
-        queryset = self.filter_queryset(self.get_queryset())
-        queryset = queryset.filter(author=request.user)
-
-        page = self.paginate_queryset(queryset)
-        if page is not None:
-            serializer = self.get_serializer(page, many=True)
-            return self.get_paginated_response(serializer.data)
-
-        serializer = self.get_serializer(queryset, many=True)
-        return Response(serializer.data)

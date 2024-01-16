@@ -1,17 +1,13 @@
-import useFetch from "../hooks/useFetch";
-import { useState, useEffect } from "react";
-import { CSSTransition } from "react-transition-group";
-import { useRef } from "react";
-import useToggle from "../hooks/useToggle";
-import useOutsideClick from "../hooks/useOutsideClick";
-import DirectoryDeleteAlert from "../components/DirectoryDeleteAlert";
+import { Container} from '@chakra-ui/react';
+import DifficultyPlot from '../components/DifficultyPlot';
+
 
 const HomePage = () => {
 
   return (
-   <div>
+    <Container w='300px' h='100vh' centerContent mt={10}>
       HOMEPAGE
-    </div>
+    </Container>
   );
 };
 

@@ -3,7 +3,6 @@ import TagsContainer from "./TagsContainer";
 import { useNavigate } from "react-router-dom";
 import DeleteDealButton from "./DeleteDealButton";
 import MoveDealButton from "./MoveDealButton";
-import { useRef } from "react";
 import client from "../hooks/axiosClient";
 import {
   Card,
@@ -18,6 +17,9 @@ import {
   Tooltip,
   Heading,
   Box,
+  HStack,
+  Tag,
+  TagLabel
 } from "@chakra-ui/react";
 
 const MyDealListElement = ({
@@ -54,6 +56,8 @@ const MyDealListElement = ({
     }
   };
 
+  console.log(myDeal.tags);
+
   return (
     <>
       <Card maxW="md" p={4} bg="gray.800" border="2px" borderColor="green.700">
@@ -66,7 +70,6 @@ const MyDealListElement = ({
               alignItems="center"
               justifyContent="space-between"
               flexDirection="row"
-              s
               px={2}
               w="100%"
             >
@@ -83,7 +86,23 @@ const MyDealListElement = ({
               flexDirection="row"
               w="100%"
             >
-              <TagsContainer tags={myDeal.tags} />
+              <HStack mt={3}>
+                  {myDeal.tags.map((item, idx) => (
+                    <Tag
+                      size="lg"
+                      key={idx}
+                      borderRadius="full"
+                      variant="solid"
+                      colorScheme="green"
+                      cursor='pointer'
+                      _hover={{
+                        backgroundColor: 'green.500'
+                      }}
+                    >
+                      <TagLabel>{item}</TagLabel>
+                    </Tag>
+                  ))}
+                </HStack>
               <Box>diff: {myDeal.difficulty}</Box>
             </Flex>
           </VStack>

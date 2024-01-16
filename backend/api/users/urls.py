@@ -3,6 +3,7 @@ from django.urls import path
 from .views import (
     ActiveSession,
     GetCSRFToken,
+    ProfileDataView,
     ProfileDirectoryView,
     UserLogin,
     UserLogout,
@@ -16,4 +17,5 @@ urlpatterns = [
     path("active_session/", ActiveSession.as_view(), name="user-view"),
     path("csrf_cookie/", GetCSRFToken.as_view(), name="get-csrf-token"),
     path("directories/", ProfileDirectoryView.as_view(), name="get-update-directories"),
+    path("profile_data/", ProfileDataView.as_view(), name="get-update-profile"),
 ]

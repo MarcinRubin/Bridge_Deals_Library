@@ -2,8 +2,6 @@ import MyDealListElement from "../components/MyDealListElement";
 import DealNavigator from "../components/DealNavigator";
 import client from "../hooks/axiosClient";
 import { useState, useEffect } from "react";
-import LoadingElement from "../components/LoadingElement";
-import { setFilterDownTheTree } from "../utils/DealNavigator";
 import useDualFetch from "../hooks/useDualFetch";
 import { Spinner, Container, Flex } from "@chakra-ui/react";
 
@@ -84,8 +82,8 @@ const MyDeals = () => {
                 .filter((item) => filter.includes(item.directory))
                 .map((item) => (
                   <MyDealListElement
-                    myDeal={item}
                     key={item.id}
+                    myDeal={item}
                     allDirectories={allDirectories}
                     handleChangeDealsList={handleChangeDealDirectory}
                     handleRemoveFromDealList={handleRemoveDeal}

@@ -33,13 +33,12 @@ class Deal(models.Model):
         Profile, on_delete=models.CASCADE, blank=False, null=False, related_name="deals"
     )
     created_at = models.DateTimeField(auto_now_add=True)
-    visibility = models.BooleanField()
 
 
 class Comment(models.Model):
+    title = models.CharField(max_length=100, blank=True, null=True)
     body = models.TextField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
-    visibility = models.BooleanField(default=True)
     difficulty = models.IntegerField(
         blank=True, null=True, validators=[MaxValueValidator(5)]
     )
@@ -53,5 +52,5 @@ class Comment(models.Model):
     deal = models.ForeignKey(
         Deal, on_delete=models.CASCADE, blank=False, null=False, related_name="comments"
     )
-    directory = models.CharField(max_length=100, default="other")
+    directory = models.CharField(max_length=100, default="Other")
     tags = models.ManyToManyField(Tag, related_name="comments", blank=True)

@@ -1,10 +1,9 @@
 from django.urls import path
 from rest_framework import routers
 
-from .views import DealsViewSet, TagsView, TournamentsView, UserCommentViewSet
+from .views import TagsView, TournamentsView, UserCommentViewSet
 
 router = routers.DefaultRouter()
-router.register(r"deals", DealsViewSet)
 router.register(r"my_comments", UserCommentViewSet, basename="my-comments")
 
 urlpatterns = [

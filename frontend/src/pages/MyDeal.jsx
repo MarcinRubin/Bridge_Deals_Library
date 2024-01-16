@@ -53,7 +53,7 @@ const MyDeal = ({}) => {
   const [loaded_comment, deal_id] = useLoaderData();
 
   const [tags, setTags] = useState([]);
-  const [currentTags, setCurrentTags] = useState(loaded_comment.tags);
+  const [currentTags, setCurrentTags] = useState(loaded_comment.tags.map( (item) => { return { "value": item, "label": item }}));
   const [deal, setDeal] = useState(loaded_comment.deal);
 
   const [comment, setComment] = useState({
@@ -61,6 +61,8 @@ const MyDeal = ({}) => {
     difficulty: loaded_comment.difficulty,
     body: loaded_comment.body
   });
+
+  console.log(loaded_comment);
 
   const handleUpdateDeal = async () => {
     try {
@@ -112,13 +114,16 @@ const MyDeal = ({}) => {
           gap={4}
           wrap="wrap"
           >
-
+              {deal.result_table ?
               <ResultTable
                 result_table = {deal.result_table}
                 />
+              : null}
+              {deal.trick_table ?
               <TrickTable
                 trick_table = {deal.trick_table}
                 />
+              : null}
         </Flex>
 
         <Flex

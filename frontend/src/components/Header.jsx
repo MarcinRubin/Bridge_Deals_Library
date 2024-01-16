@@ -13,15 +13,18 @@ import {
 import { ChevronDownIcon, AddIcon, LinkIcon, PlusSquareIcon } from "@chakra-ui/icons";
 import client from "../hooks/axiosClient";
 import { Link as ReactRouterLink } from "react-router-dom";
-import { Navigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const Header = ({ profile, profile_pic }) => {
+
+    const navigate = useNavigate();
 
     const handleLogout = async (e) =>{
         e.preventDefault;
         try{
+          console.log("LALALA");
           const response = await client.post("/api/logout/");
-          Navigate("/login");
+          navigate("/login");
         }
         catch(err){
           console.log(err);
@@ -57,7 +60,7 @@ const Header = ({ profile, profile_pic }) => {
       justifyContent="space-between"
     >
       <HStack spacing="3" h="100%">
-        <Box color="black" width="56px">
+        <Box color="black" width="56px" as={ReactRouterLink} to="/">
           LOGO
         </Box>
         <HStack as="nav" gap="0" h="100%">
@@ -85,9 +88,6 @@ const Header = ({ profile, profile_pic }) => {
           <ChakraLink sx={linkStyle} as={ReactRouterLink} to="/mydeals">
             My Deals
           </ChakraLink>
-          <ChakraLink sx={linkStyle} as={ReactRouterLink} to="/all_deals">
-            All Deals
-          </ChakraLink>
         </HStack>
       </HStack>
       <HStack>
@@ -109,7 +109,7 @@ const Header = ({ profile, profile_pic }) => {
             <Avatar size="lg" src={profile_pic} />
           </MenuButton>
           <MenuList bg="green.700">
-            <MenuItem sx={menuItemStyle}><i className="bi bi-person-fill"></i><span style={{"marginLeft": "0.75rem"}}>Profile</span></MenuItem>
+            <MenuItem as={ReactRouterLink} to="/profile" icon={<LinkIcon/>}sx={menuItemStyle}>Profile</MenuItem>
             <MenuItem sx={menuItemStyle} onClick={handleLogout}><i className="bi bi-box-arrow-left"></i><span style={{"marginLeft": "0.75rem"}}>Logout</span></MenuItem>
           </MenuList>
         </Menu>

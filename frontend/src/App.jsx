@@ -26,7 +26,7 @@ function App() {
         profile_pic = {profile_pic}
       />
     <div className="main-page-container">
-      <Outlet context={profile}/>
+      <Outlet context={[profile, profile_pic]}/>
     </div>
     </>
   )

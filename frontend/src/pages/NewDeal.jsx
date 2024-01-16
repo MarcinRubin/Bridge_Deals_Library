@@ -38,6 +38,7 @@ const NewDeal = ({}) => {
   const [tags, setTags] = useState([]);
 
   const [currentTags, setCurrentTags] = useState([]);
+  console.log(currentTags);
   const [deal, setDeal] = useState({
     deal_info: {
       N: {

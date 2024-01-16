@@ -10,7 +10,6 @@ import {
 
 import App, {loader as rootloader} from './App.jsx';
 import NewDeal from './pages/NewDeal.jsx'
-import AllDeals from './pages/AllDeals.jsx'
 import ErrorPage from './pages/Error.jsx'
 import LoginForm, {loader as loginloader} from './pages/LoginForm.jsx';
 import RegisterForm from './pages/RegisterForm.jsx';
@@ -19,6 +18,7 @@ import MyDeal, {loader as mydealloader} from './pages/MyDeal.jsx';
 import HomePage from './pages/HomePage.jsx';
 import CreateDealFromLink from './pages/CreateDealFromLink.jsx';
 import CreateDealSetFromLink, {loader as tournamentLoader} from './pages/CreateDealSetFromLink.jsx';
+import Profile from './pages/Profile.jsx';
 
 const router = createBrowserRouter([
   {
@@ -40,10 +40,6 @@ const router = createBrowserRouter([
         element: <CreateDealFromLink/>
       },
       {
-        path: "/deals",
-        element: <AllDeals/>
-      },
-      {
         path: "/mydeals",
         element: <MyDeals/>
       },
@@ -57,6 +53,11 @@ const router = createBrowserRouter([
         element: <MyDeal/>,
         loader: mydealloader,
       },
+      {
+        path: "/profile",
+        element: <Profile/>,
+      },
+
 
     ],
   },
