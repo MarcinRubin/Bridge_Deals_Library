@@ -1,4 +1,3 @@
-from django.db.models import Avg, Count
 from rest_framework import serializers
 from users.models import Profile
 
@@ -21,41 +20,11 @@ class DealsSerializer(serializers.ModelSerializer):
     author = serializers.SlugRelatedField(
         slug_field="username", queryset=Profile.objects.all()
     )
+    tournament = serializers.SlugRelatedField(slug_field="name", read_only=True)
 
     class Meta:
         model = Deal
         fields = "__all__"
-
-
-class DealsSerializerGeneral(serializers.ModelSerializer):
-    author = serializers.SlugRelatedField(read_only=True, slug_field="username")
-    avg_difficulty = serializers.SerializerMethodField(read_only=True)
-    most_popular_tags = serializers.SerializerMethodField(read_only=True)
-    created_at = serializers.DateTimeField(format="%d %B %Y")
-
-    class Meta:
-        model = Deal
-        fields = (
-            "id",
-            "name",
-            "tournament",
-            "deal_info",
-            "author",
-            "created_at",
-            "avg_difficulty",
-            "most_popular_tags",
-        )
-
-    def get_avg_difficulty(self, obj):
-        return list(obj.comments.aggregate(Avg("difficulty")).values())[0]
-
-    def get_most_popular_tags(self, obj):
-        return (
-            obj.comments.values("tags__name")
-            .annotate(count=Count("tags__name"))
-            .order_by("-count")[:3]
-            .values_list("tags__name", flat=True)
-        )
 
 
 class CommentsSerializer(serializers.ModelSerializer):

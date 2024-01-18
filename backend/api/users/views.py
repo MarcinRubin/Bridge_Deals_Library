@@ -7,7 +7,11 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from .models import Profile
-from .serializers import ProfileDirectoriesSerializer, UserSerializer
+from .serializers import (
+    ProfileDataSerializer,
+    ProfileDirectoriesSerializer,
+    UserSerializer,
+)
 
 
 @method_decorator(ensure_csrf_cookie, name="dispatch")
@@ -79,6 +83,14 @@ class ActiveSession(APIView):
 class ProfileDirectoryView(generics.RetrieveUpdateAPIView):
     queryset = Profile.objects.all()
     serializer_class = ProfileDirectoriesSerializer
+
+    def get_object(self):
+        return self.request.user.profile
+
+
+class ProfileDataView(generics.RetrieveUpdateAPIView):
+    queryset = Profile.objects.all()
+    serializer_class = ProfileDataSerializer
 
     def get_object(self):
         return self.request.user.profile

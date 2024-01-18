@@ -40,7 +40,17 @@ class ProfileSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-class ProfileDirectoriesSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Profile
+class ProfileDirectoriesSerializer(ProfileSerializer):
+    class Meta(ProfileSerializer.Meta):
         fields = ["directories"]
+
+
+class ProfileDataSerializer(ProfileSerializer):
+    user = serializers.SlugRelatedField(read_only=True, slug_field="email")
+    image_url = serializers.SerializerMethodField("get_image_url")
+
+    class Meta(ProfileSerializer.Meta):
+        fields = ["user", "username", "image", "image_url"]
+
+    def get_image_url(self, obj):
+        return obj.image.url

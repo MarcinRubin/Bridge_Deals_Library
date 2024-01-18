@@ -6,21 +6,26 @@ DEALS_PLAYER = ["N", "S", "W", "E"]
 DEALS_PARAMETERS = {"vul", "player"}
 DEAL_TRICKS = ["NTricks", "STricks", "WTricks", "ETricks"]
 
-SUITS = ["C", "D", "H", "S", "NT"]
-CARD = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"]
+SUITS = ["C", "D", "H", "S", "NT", "-"]
+CARD = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A", "-"]
 DOUBLE = ["", "X", "XX"]
 HANDS = ["HandN", "HandS", "HandW", "HandE"]
 TRICKS = ["TricksFromN", "TricksFromS", "TricksFromW", "TricksFromE"]
 VULNERABILITY = [[False, False], [True, False], [False, True], [True, True]]
 
 
-class deal_scrapper:
+class DealScrapper:
     def __init__(self, url):
         # Add error handling if there are no response or url is invalid
         response = requests.get(url, timeout=10)
-        data = response.json()
-        self.deal_data = data["ScoringGroups"][0]["Distribution"]["_handRecord"]
-        self.deal_scores = data["ScoringGroups"][0]["Scores"]
+        self.status_code = response.status_code
+        if self.status_code == 200:
+            data = response.json()
+            self.deal_data = data["ScoringGroups"][0]["Distribution"]["_handRecord"]
+            self.deal_scores = data["ScoringGroups"][0]["Scores"]
+
+    def get_status_code(self):
+        return self.status_code
 
     def get_deal(self):
         deal_data_copy = copy.deepcopy(self.deal_data)
@@ -30,7 +35,7 @@ class deal_scrapper:
         }
 
     def get_dealer(self):
-        return {"dealer": DEALS_PLAYER[self.deal_data["Dealer"]]}
+        return {"dealer": DEALS_PLAYER[self.deal_data["_declarer"]]}
 
     def get_vulnerability(self):
         return {"vulnerability": VULNERABILITY[self.deal_data["Vulnerability"]]}
@@ -48,6 +53,8 @@ class deal_scrapper:
                 contract_data = score["NsScore"]
                 contract = contract_data["Contract"]
                 lead = contract_data["Lead"]
+                if lead is None:
+                    lead = {"CardColor": 5, "CardHeight": 13}
                 score_table.append(
                     {
                         "player": DEALS_PLAYER[contract["Declarer"]],

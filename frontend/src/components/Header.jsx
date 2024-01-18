@@ -1,76 +1,126 @@
-import { Link, useNavigate } from "react-router-dom";
-import useToggle from "../hooks/useToggle";
-import { useRef } from "react";
+import {
+  Flex,
+  Box,
+  HStack,
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
+  Button,
+  Link as ChakraLink,
+  Avatar,
+} from "@chakra-ui/react";
+import { ChevronDownIcon, AddIcon, LinkIcon, PlusSquareIcon } from "@chakra-ui/icons";
 import client from "../hooks/axiosClient";
-import { DropMenu, DropMenuElement, DropMenuElementLink, DropMenuHeader } from "./DropMenu";
+import { Link as ReactRouterLink } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
-const Header = ({profile, profile_pic}) => {
-  const navigate = useNavigate();
-  const [profileMenu, toggle] = useToggle(false);
-  const [dealMenu, toggleDeal] = useToggle(false);
-  const myRef = useRef();
+const Header = ({ profile, profile_pic }) => {
 
-  const handleLogout = async (e) =>{
-    e.preventDefault;
-    try{
-      const response = await client.post("/api/logout/");
-      navigate("/login");
-    }
-    catch(err){
-      console.log(err);
-    }
+    const navigate = useNavigate();
+
+    const handleLogout = async (e) =>{
+        e.preventDefault;
+        try{
+          console.log("LALALA");
+          const response = await client.post("/api/logout/");
+          navigate("/login");
+        }
+        catch(err){
+          console.log(err);
+        }
+      }
+
+    const linkStyle = {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    height: "100%",
+    px: 4,
+    _hover: {
+      backgroundColor: "green.600",
+    },
+    borderRadius: "md",
+  };
+
+  const menuItemStyle= {
+    backgroundColor: "green.700",
+    _hover: {
+        backgroundColor: "green.600",
+      },
   }
 
   return (
-    <div className="header-container">
-        <div className="left-control-panel">
-        <Link to={``} className="logo">LOGO</Link>
-            <nav className="header-nav">
-              <ul>
-                <li className ="drop-menu-wrapper" onClick={toggleDeal} style={{backgroundColor: dealMenu ? "var(--green-darker-color)" : ""}}>
-                  <a>New Deal <i className={dealMenu ? 'bi bi-caret-up-fill' : 'bi bi-caret-down-fill'}></i></a>
-                  <DropMenu  isActive={dealMenu} toggle={toggleDeal} xtranslate={0} ytranslate={80}>
-                    <DropMenuElementLink text={"Custom"} icon={"bi bi-file-plus-fill"} link={"create"} />
-                    <DropMenuElementLink text={"From link"} icon={"bi bi-box-arrow-down"} link={"link_create"} />
-                    <DropMenuElementLink text={"From tournament"} icon={"bi bi-bag-plus"} link={"batch_create"}/>
-                  </DropMenu>
-                </li>
-                <li><Link to={`deals`}>All Deals</Link></li>
-                <li><Link to={'mydeals'}> My Deals</Link></li>
-              </ul>
-            </nav>
-        </div>
-        <div className="right-control-panel">
-            <span className='username-tag'>Hello {profile}!</span>
-            <div className="drop-menu-wrapper">
-            <div className="profile-picture-wrapper"><img src={profile_pic} alt="" onClick = {toggle}/></div>
-            <DropMenu isActive={profileMenu} toggle={toggle} xtranslate={-60} ytranslate={80}>
-              <DropMenuHeader>
-                <div className="profile-menu-profile">
-                  <div className="mini-profile-picture-wrapper"><img src={profile_pic} alt=""/></div>
-                  <a>{profile}</a>
-                </div>
-              </DropMenuHeader>
-              <DropMenuElement text={"My Profile"} icon={"bi bi-person-fill"}/>
-              <DropMenuElementLink text={"Logout"} icon={"bi bi-box-arrow-right"} link={"login"} onClick={handleLogout}/>
-            </DropMenu>
-            </div>
-            {
-              /*profileMenu &&
-                <div className="profile-menu-wrapper">
-                  <div className="profile-menu-profile">
-                  <div className="mini-profile-picture-wrapper"><img src={profile_pic} alt=""/></div>
-                  <a>{profile}</a>
-                  </div>
-                  <ul>
-                    <li><a href="#"><i className="bi bi-person-fill"></i><span>My profile</span></a></li>
-                    <li><Link to={`login`} onClick={handleLogout}><i className="bi bi-box-arrow-right"></i><span>Log out</span></Link></li>
-                  </ul>
-                </div>*/
-            }
-        </div>
-    </div>
-  )
-}
+    <Flex
+      className="my-box"
+      flexDirection="row"
+      bg="green.700"
+      h="70px"
+      b=""
+      px="2"
+      justifyContent="space-between"
+      position="sticky"
+      top='0'
+      zIndex='10'
+      w="100%"
+    >
+      <HStack spacing="3" h="100%">
+        <Box color="black" width="56px" as={ReactRouterLink} to="/">
+          LOGO
+        </Box>
+        <HStack as="nav" gap="0" h="100%">
+          <Menu>
+            <MenuButton
+              as={Button}
+              rightIcon={<ChevronDownIcon />}
+              bg="green.700"
+              h="100%"
+              _hover={{
+                bg: "green.600",
+              }}
+              _active={{
+                bg: "green.600",
+              }}
+            >
+              Create Deal
+            </MenuButton>
+            <MenuList backgroundColor="green.700">
+              <MenuItem as={ReactRouterLink} to="/create" icon={<AddIcon />} sx={menuItemStyle}>Custom</MenuItem>
+              <MenuItem as={ReactRouterLink} to="/link_create" icon={<LinkIcon/>}sx={menuItemStyle}>From Link</MenuItem>
+              <MenuItem as={ReactRouterLink} to="/batch_create" icon={<PlusSquareIcon/>}sx={menuItemStyle}>From Tournament</MenuItem>
+            </MenuList>
+          </Menu>
+          <ChakraLink sx={linkStyle} as={ReactRouterLink} to="/mydeals">
+            My Deals
+          </ChakraLink>
+        </HStack>
+      </HStack>
+      <HStack>
+        <Box as="span">Hello {profile}!</Box>
+        <Menu>
+          <MenuButton
+            borderRadius="100%"
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+            padding="2px"
+            _hover={{
+              bg: "green.600",
+            }}
+            _active={{
+              bg: "green.600",
+            }}
+          >
+            <Avatar size="lg" src={profile_pic} />
+          </MenuButton>
+          <MenuList bg="green.700">
+            <MenuItem as={ReactRouterLink} to="/profile" icon={<LinkIcon/>}sx={menuItemStyle}>Profile</MenuItem>
+            <MenuItem sx={menuItemStyle} onClick={handleLogout}><i className="bi bi-box-arrow-left"></i><span style={{"marginLeft": "0.75rem"}}>Logout</span></MenuItem>
+          </MenuList>
+        </Menu>
+      </HStack>
+    </Flex>
+  );
+};
 
-export default Header
+export default Header;

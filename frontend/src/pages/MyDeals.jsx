@@ -2,9 +2,8 @@ import MyDealListElement from "../components/MyDealListElement";
 import DealNavigator from "../components/DealNavigator";
 import client from "../hooks/axiosClient";
 import { useState, useEffect } from "react";
-import LoadingElement from "../components/LoadingElement";
-import { setFilterDownTheTree } from "../utils/DealNavigator";
 import useDualFetch from "../hooks/useDualFetch";
+import { Spinner, Container, Flex } from "@chakra-ui/react";
 
 const MyDeals = () => {
   const [allDirectories, setAllDirectories] = useState([]);
@@ -13,7 +12,7 @@ const MyDeals = () => {
   const [deals, setDeals, directories, setDirectories, error, loading] =
     useDualFetch("/api/my_comments", "/api/directories/");
 
-    const handleChangeDealDirectory = (id, newDirectory) => {
+  const handleChangeDealDirectory = (id, newDirectory) => {
     const newDeals = [...deals];
     const deal = newDeals.filter((item) => item.id === id)[0];
     deal.directory = newDirectory;
@@ -57,40 +56,43 @@ const MyDeals = () => {
   };
 
   return (
-    <>
+     <Flex display="flex" w="100%" flexDirection="row" mt={8} gap={4} px={8} b={0} justifyContent="flex-start">
       {loading ? (
-        <div className="loader"></div>
+        <Spinner color="green.500" size="xl"/>
       ) : (
-        <div className="all-deals-wrapper">
-          <DealNavigator
-            directories={directories}
-            filter={filter}
-            setFilter={setFilter}
-            allDirectories={allDirectories}
-            setAllDirectories={setAllDirectories}
-            addDirectoryToTree={addDirectoryToTree}
-            deleteDirectoryFromTree={deleteDirectoryFromTree}
-          />
-          <div className="all-deals-container">
+        <>
+          <Flex minW="200px" minH="100%">
+            <DealNavigator
+              directories={directories}
+              filter={filter}
+              setFilter={setFilter}
+              allDirectories={allDirectories}
+              setAllDirectories={setAllDirectories}
+              addDirectoryToTree={addDirectoryToTree}
+              deleteDirectoryFromTree={deleteDirectoryFromTree}
+            />
+          </Flex>
+          <Flex wrap="wrap" gap={8} alignItems="flex-start">
             {deals.length === 0 ? (
-              <LoadingElement spinnerWidth={50} thickness={5} />
+              <Spinner/>
             ) : null}
             {Object.keys(deals).length !== 0 &&
               deals
                 .filter((item) => filter.includes(item.directory))
                 .map((item) => (
                   <MyDealListElement
-                    myDeal={item}
                     key={item.id}
+                    myDeal={item}
                     allDirectories={allDirectories}
                     handleChangeDealsList={handleChangeDealDirectory}
                     handleRemoveFromDealList={handleRemoveDeal}
                   />
                 ))}
-          </div>
-        </div>
+          </Flex>
+          </>
+
       )}
-    </>
+      </Flex>
   );
 };
 

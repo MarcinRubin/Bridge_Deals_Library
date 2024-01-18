@@ -16,9 +16,10 @@ export function findNode(key, directoryStructure){
   };
 
 export function findParentNode(node, directoryStructure){
-  console.log(node);
   const path = node.key.split("-");
     path.pop();
     const parentNode = findNode(path.join("-"), directoryStructure);
+    if (path.length === 0)
+      return directoryStructure[0];
     return parentNode;
   };

@@ -2,20 +2,27 @@ version: '3.8'
 
 services:
   backend:
-    build: ./backend/api
     container_name: bridge-api
+    build:
+      context: .
+      dockerfile: ./compose/django/Dockerfile
+    command: /start
     volumes:
-      - ./backend/api/:/api
+      - ./backend/api/:/app
     ports:
       - 8000:8000
     env_file:
       - ./backend/api/.env
+    depends_on:
+      - redis
+      - db
 
   frontend:
     container_name: react-frontend
     build:
-      context: ./frontend
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: ./compose/react/Dockerfile
+    command: /start-react
     volumes:
       - './frontend:/frontend'
       - '/frontend/node_modules'
@@ -25,7 +32,7 @@ services:
       - CHOKIDAR_USEPOLLING=true
 
   reverse_proxy:
-    build: ./nginx
+    build: ./compose/nginx
     ports:
       - 81:80
     depends_on:
@@ -34,11 +41,15 @@ services:
 
   worker:
     restart: unless-stopped
-    build: ./backend/api
+    build:
+      context: .
+      dockerfile: ./compose/django/Dockerfile
+    command: /start-celeryworker
     volumes:
-      - ./backend/api/:/api
+      - ./backend/api/:/app
+    env_file: ./backend/api/.env
     depends_on:
-      - backend
+      - db
       - redis
 
   redis:
@@ -51,10 +62,13 @@ services:
     container_name: bridge-db
     volumes:
       - postgres_data:/var/lib/postgresql/data/
+    env_file: ./backend/api/.env
     environment:
-      - POSTGRES_USER=admin
-      - POSTGRES_PASSWORD=admin
-      - POSTGRES_DB=bridge_app
+      SQL_HOST: db
+    ports:
+      - 5432:5432
+    expose:
+      - "5432"
 
 volumes:
   postgres_data:

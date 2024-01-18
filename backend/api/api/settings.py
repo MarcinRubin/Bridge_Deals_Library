@@ -12,6 +12,11 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 import os
 from pathlib import Path
 
+from dotenv import load_dotenv
+
+# Load environment variables from .env file or .env.local (for local backend)
+load_dotenv()
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -20,7 +25,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-@+zzxsv4y53_v5^2-=@@jp=o8_4xd(#+1imf3#+2v4(k=hqk=9"
+SECRET_KEY = os.environ.get("SECRET_KEY", "0")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -33,6 +38,7 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     "users.apps.UsersConfig",
     "deals.apps.DealsConfig",
+    "scrapper.apps.ScrapperConfig",
     "rest_framework",
     "django_filters",
     "django.contrib.admin",
@@ -157,6 +163,6 @@ AUTH_USER_MODEL = "users.User"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 MEDIA_URL = "/api/media/"
 
-# CEERY SETTINGS
-CELERY_BROKER_URL = "redis://redis:6379/0"
-CELERY_RESULT_BACKEND = "redis://redis:6379/0"
+# CELERY SETTINGS
+CELERY_BROKER_URL = os.environ.get("CELERY_BROKER_URL", "redis://redis:6379/0")
+CELERY_RESULT_BACKEND = os.environ.get("CELERY_RESULT_BACKEND", "redis://redis:6379/0")
