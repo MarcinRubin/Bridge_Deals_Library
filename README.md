@@ -64,10 +64,15 @@ $ docker-compose up --build
 
 ## Application View
 <h3>Create new deal</h3>
+
 ![Create Deal](img/create_deal.png)
+
 <h3>Deals in library</h3>
+
 ![My Deals](img/my_deals.png)
+
 <h3>Statistics</h3>
+
 ![Statistics](img/statistics.png)
 
 ## Project Status
