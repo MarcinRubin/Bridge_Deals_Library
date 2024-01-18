@@ -56,8 +56,13 @@ const Header = ({ profile, profile_pic }) => {
       flexDirection="row"
       bg="green.700"
       h="70px"
+      b=""
       px="2"
       justifyContent="space-between"
+      position="sticky"
+      top='0'
+      zIndex='10'
+      w="100%"
     >
       <HStack spacing="3" h="100%">
         <Box color="black" width="56px" as={ReactRouterLink} to="/">

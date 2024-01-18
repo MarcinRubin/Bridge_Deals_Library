@@ -228,6 +228,7 @@ const DealNavigator = ({
 
       <VStack
         w="100%"
+        h="100%"
         border="2px"
         borderColor="green.700"
         borderRadius="0.5rem"

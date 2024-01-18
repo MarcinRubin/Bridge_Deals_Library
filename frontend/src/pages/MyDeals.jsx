@@ -56,13 +56,12 @@ const MyDeals = () => {
   };
 
   return (
-    <>
-     <Container maxW="1400px" display="flex" flexDirection="row" mt={8} gap={4} minH="100vh">
+     <Flex display="flex" w="100%" flexDirection="row" mt={8} gap={4} px={8} b={0} justifyContent="flex-start">
       {loading ? (
         <Spinner color="green.500" size="xl"/>
       ) : (
         <>
-          <Flex minW="200px">
+          <Flex minW="200px" minH="100%">
             <DealNavigator
               directories={directories}
               filter={filter}
@@ -93,8 +92,7 @@ const MyDeals = () => {
           </>
 
       )}
-      </Container>
-    </>
+      </Flex>
   );
 };
 
